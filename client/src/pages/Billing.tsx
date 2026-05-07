@@ -174,7 +174,7 @@ const Billing = () => {
             >
               {plan.popular && (
                 <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
-                  <Badge className="bg-yellow-100 text-yellow-800 px-3 py-1">
+                  <Badge className="bg-primary/10 text-primary px-3 py-1 border-primary/20">
                     Most Popular
                   </Badge>
                 </div>
@@ -182,14 +182,14 @@ const Billing = () => {
               
               <CardHeader className="text-center pb-4">
                 <div className="flex justify-center mb-4">
-                  <div className={`p-3 rounded-full ${plan.popular ? 'bg-yellow-100' : 'bg-gray-100'}`}>
-                    <Icon className={`w-6 h-6 ${plan.popular ? 'text-yellow-600' : 'text-gray-600'}`} />
+                  <div className={`p-3 rounded-full ${plan.popular ? 'bg-primary/10' : 'bg-secondary'}`}>
+                    <Icon className={`w-6 h-6 ${plan.popular ? 'text-primary' : 'text-secondary-foreground'}`} />
                   </div>
                 </div>
-                <CardTitle className="text-2xl">{plan.name}</CardTitle>
-                <CardDescription>{plan.description}</CardDescription>
+                <CardTitle className="text-2xl text-card-foreground">{plan.name}</CardTitle>
+                <CardDescription className="text-muted-foreground">{plan.description}</CardDescription>
                 <div className="pt-4">
-                  <span className="text-4xl font-bold">{plan.price}</span>
+                  <span className="text-4xl font-bold text-card-foreground">{plan.price}</span>
                   {plan.id === 'MONTHLY' && <span className="text-muted-foreground">/month</span>}
                 </div>
               </CardHeader>
@@ -199,13 +199,13 @@ const Billing = () => {
                   {plan.features.map((feature, index) => (
                     <li key={index} className="flex items-center gap-2">
                       <Check className="w-4 h-4 text-green-500 flex-shrink-0" />
-                      <span className="text-sm">{feature}</span>
+                      <span className="text-sm text-card-foreground">{feature}</span>
                     </li>
                   ))}
                 </ul>
 
                 {isCurrentPlan ? (
-                  <Button className="w-full bg-green-600 hover:bg-green-700 text-white" disabled>
+                  <Button className="w-full bg-primary hover:bg-primary/90 text-primary-foreground" disabled>
                     ✓ Purchased
                   </Button>
                 ) : (
