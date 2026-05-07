@@ -20,6 +20,7 @@ export const getDateRange = (
       from: customFrom,
       to: customTo,
       value: DateRangeEnum.CUSTOM,
+      label: "Custom Range",
     };
   }
 

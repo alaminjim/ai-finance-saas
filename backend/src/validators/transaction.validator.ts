@@ -19,7 +19,7 @@ export const baseTransactionSchema = z.object({
   category: z.string().min(1, "Category is required"),
   date: z
     .union([z.string().datetime({ message: "Invalid date string" }), z.date()])
-    .transform((val) => new Date(val)),
+    .transform((val: string | Date) => new Date(val)),
   isRecurring: z.boolean().default(false),
   recurringInterval: z
     .enum([
@@ -56,8 +56,8 @@ export const bulkTransactionSchema = z.object({
     .min(1, "At least one transaction is required")
     .max(300, "Must not be more than 300 transactions")
     .refine(
-      (txs) =>
-        txs.every((tx) => {
+      (txs: CreateTransactionType[]) =>
+        txs.every((tx: CreateTransactionType) => {
           const amount = Number(tx.amount);
           return !isNaN(amount) && amount > 0 && amount <= 1_000_000_000;
         }),

@@ -1,4 +1,4 @@
-import { Response } from "express";
+import { Request, Response, NextFunction } from "express";
 import { z, ZodError } from "zod";
 import { ErrorRequestHandler } from "express";
 import { HTTPSTATUS } from "../config/http.config";
@@ -34,10 +34,10 @@ const handleMulterError = (error: MulterError) => {
 };
 
 export const errorHandler: ErrorRequestHandler = (
-  error,
-  req,
-  res,
-  next
+  error: any,
+  req: Request,
+  res: Response,
+  next: NextFunction
 ): any => {
   if (error instanceof ZodError) {
     return formatZodError(res, error);

@@ -1,3 +1,4 @@
+import "multer";
 import UserModel from "../models/user.model";
 import { NotFoundException } from "../utils/app-error";
 import { UpdateUserType } from "../validators/user.validator";
