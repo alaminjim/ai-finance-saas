@@ -26,8 +26,8 @@ export function UserNav({
   // Debug subscription data
   useEffect(() => {
     console.log('UserNav - Subscription data:', subscription);
-    console.log('UserNav - Subscription status:', subscription?.status);
-    console.log('UserNav - Subscription plan:', subscription?.plan);
+    console.log('UserNav - Subscription status:', subscription?.data?.status);
+    console.log('UserNav - Subscription plan:', subscription?.data?.plan);
   }, [subscription]);
 
   useEffect(() => {
@@ -70,10 +70,10 @@ export function UserNav({
           <div className="px-3 py-2 border-b border-gray-700">
             <div className="font-semibold">{userName}</div>
             <div className="text-[13px] text-gray-400 font-light flex items-center gap-1">
-              {subscription?.status === 'active' ? (
+              {subscription?.data?.status === 'active' ? (
                 <>
                   <Crown className="w-3 h-3 text-yellow-500" />
-                  {subscription?.plan === 'LIFETIME' ? 'Lifetime Plan' : 'Premium Plan'}
+                  {subscription?.data?.plan === 'LIFETIME' ? 'Lifetime Plan' : 'Premium Plan'}
                 </>
               ) : (
                 'Free Trial (2 days left)'

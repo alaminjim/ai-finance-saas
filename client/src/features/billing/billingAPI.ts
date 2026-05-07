@@ -18,10 +18,16 @@ export interface Subscription {
   plan: SubscriptionPlan;
   status: 'active' | 'cancelled' | 'expired';
   currentPeriodEnd?: string;
-  cancelledAt?: string;
-  createdAt: string;
-  updatedAt: string;
-  isActive: boolean;
+  createdAt?: string;
+  updatedAt?: string;
+  stripeCustomerId?: string;
+  stripeSubscriptionId?: string;
+  __v?: number;
+}
+
+export interface SubscriptionResponse {
+  message: string;
+  data: Subscription;
 }
 
 export const billingApi = apiClient.injectEndpoints({
@@ -34,7 +40,7 @@ export const billingApi = apiClient.injectEndpoints({
       }),
     }),
 
-    getSubscription: builder.query<Subscription, void>({
+    getSubscription: builder.query<SubscriptionResponse, void>({
       query: () => ({
         url: "/billing/subscription",
         method: "GET",

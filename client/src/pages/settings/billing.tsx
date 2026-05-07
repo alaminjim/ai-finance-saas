@@ -109,8 +109,8 @@ const Billing = () => {
     }
   };
 
-  const isSubscribed = subscription?.status === 'active';
-  const currentPlan = subscription?.plan;
+  const isSubscribed = subscription?.data?.status === 'active';
+  const currentPlan = subscription?.data?.plan;
 
   return (
     <div className="space-y-6">

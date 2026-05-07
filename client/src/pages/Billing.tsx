@@ -22,9 +22,9 @@ const Billing = () => {
   // Debug subscription data
   useEffect(() => {
     console.log('Billing - Subscription data:', subscription);
-    console.log('Billing - Subscription status:', subscription?.status);
-    console.log('Billing - Subscription plan:', subscription?.plan);
-    console.log('Billing - isSubscribed:', subscription?.status === 'active');
+    console.log('Billing - Subscription status:', subscription?.data?.status);
+    console.log('Billing - Subscription plan:', subscription?.data?.plan);
+    console.log('Billing - isSubscribed:', subscription?.data?.status === 'active');
   }, [subscription]);
 
   // Handle payment success callback
@@ -123,8 +123,8 @@ const Billing = () => {
     }
   };
 
-  const isSubscribed = subscription?.status === 'active';
-  const currentPlan = subscription?.plan;
+  const isSubscribed = subscription?.data?.status === 'active';
+  const currentPlan = subscription?.data?.plan;
 
   return (
     <div className="container mx-auto px-4 py-8">
