@@ -13,18 +13,32 @@ export const updateUserService = async (
   body: UpdateUserType,
   profilePic?: Express.Multer.File
 ) => {
-  const user = await UserModel.findById(userId);
-  if (!user) throw new NotFoundException("User not found");
+  console.log("Updating user service:", { userId, body, hasProfilePic: !!profilePic });
 
-  if (profilePic) {
-    user.profilePicture = profilePic.path;
+  try {
+    const user = await UserModel.findById(userId);
+    if (!user) throw new NotFoundException("User not found");
+
+    console.log("Found user:", user._id);
+
+    if (profilePic) {
+      console.log("Updating profile picture:", profilePic.path);
+      user.profilePicture = profilePic.path;
+    }
+
+    if (body.name) {
+      console.log("Updating name to:", body.name);
+      user.set({
+        name: body.name,
+      });
+    }
+
+    await user.save();
+    console.log("User saved successfully");
+
+    return user.omitPassword();
+  } catch (error) {
+    console.error("Error updating user:", error);
+    throw error;
   }
-
-  user.set({
-    name: body.name,
-  });
-
-  await user.save();
-
-  return user.omitPassword();
 };

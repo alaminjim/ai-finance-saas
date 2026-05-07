@@ -28,9 +28,23 @@ export const getCurrentUserController = asyncHandler(
 
 export const updateUserController = asyncHandler(
   async (req: Request, res: Response) => {
+    console.log("Update user request:", {
+      body: req.body,
+      user: req.user,
+      file: req.file,
+    });
+
+    if (!req.user?._id) {
+      return res.status(HTTPSTATUS.UNAUTHORIZED).json({
+        message: "User not authenticated",
+      });
+    }
+
     const body = updateUserSchema.parse(req.body);
-    const userId = req.user?._id;
+    const userId = req.user._id;
     const profilePic = req.file;
+
+    console.log("Parsed data:", { userId, body, hasProfilePic: !!profilePic });
 
     const user = await updateUserService(userId, body, profilePic);
 
