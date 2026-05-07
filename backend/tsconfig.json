@@ -1,17 +1,22 @@
 {
   "compilerOptions": {
+    /* Language and Environment */
     "target": "es2021",
 
-    "module": "commonjs",
-    "rootDir": "./src",
+    /* Modules */
+    "module": "Node16",
     "moduleResolution": "node16",
+    "rootDir": "./src",
     "typeRoots": ["./node_modules/@types"],
 
+    /* Emit */
     "outDir": "./dist",
 
+    /* Interop Constraints */
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
 
+    /* Type Checking */
     "strict": true,
     "skipLibCheck": true
   },
