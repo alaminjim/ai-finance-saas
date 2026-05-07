@@ -1,15 +1,17 @@
 import Navbar from "@/components/navbar";
 import { Outlet } from "react-router-dom";
 import EditTransactionDrawer from "@/components/transaction/edit-transaction-drawer";
+import Footer from "@/components/footer";
 
 const AppLayout = () => {
   return (
     <>
-    <div className="min-h-screen pb-10">
+    <div className="min-h-screen flex flex-col">
       <Navbar />
-      <main className="w-full max-w-full">
+      <main className="flex-1 w-full max-w-full">
         <Outlet />
       </main>
+      <Footer />
     </div>
     <EditTransactionDrawer />
     </>

@@ -1,14 +1,11 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Check, Crown, Star, Zap } from "lucide-react";
+import { Check, Crown, Zap } from "lucide-react";
 import { useCreatePaymentSessionMutation, useGetSubscriptionQuery } from "@/features/billing";
 import { toast } from "sonner";
-import { loadStripe } from "@stripe/stripe-js";
-
-const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
 
 // Debug Stripe configuration
 console.log('Stripe publishable key:', import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY ? 'Configured' : 'Missing');
@@ -16,10 +13,40 @@ console.log('API URL:', import.meta.env.VITE_API_URL || "https://ai-finance-saas
 
 const Billing = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const [selectedPlan, setSelectedPlan] = useState<'MONTHLY' | 'LIFETIME' | null>(null);
   
-  const { data: subscription, isLoading } = useGetSubscriptionQuery();
+  const { data: subscription, isLoading, refetch } = useGetSubscriptionQuery();
   const [createPaymentSession, { isLoading: isCreatingSession }] = useCreatePaymentSessionMutation();
+
+  // Handle payment success callback
+  useEffect(() => {
+    const success = searchParams.get('success');
+    const sessionId = searchParams.get('session_id');
+    const cancelled = searchParams.get('cancelled');
+
+    if (success === 'true' && sessionId) {
+      // Call payment success endpoint to activate subscription
+      fetch(`${import.meta.env.VITE_API_URL || "https://ai-finance-saas-th6o.onrender.com/api"}/billing/payment-success?session_id=${sessionId}`)
+        .then(response => response.json())
+        .then(data => {
+          if (data.message) {
+            toast.success(data.message);
+            refetch(); // Refresh subscription data
+            // Show success message and update UI
+            setTimeout(() => {
+              toast.success("Your subscription is now active! 🎉");
+            }, 1000);
+          }
+        })
+        .catch(error => {
+          console.error('Payment verification error:', error);
+          toast.error('Failed to verify payment');
+        });
+    } else if (cancelled === 'true') {
+      toast.info('Payment was cancelled');
+    }
+  }, [searchParams, refetch]);
 
   const plans = [
     {
@@ -66,15 +93,12 @@ const Billing = () => {
       const sessionUrl = result.data?.url;
       console.log('Session URL:', sessionUrl);
       
-      // Check if Stripe is loaded and result has URL
-      const stripe = await stripePromise;
-      console.log('Stripe loaded:', !!stripe);
-      
-      if (stripe && sessionUrl) {
+      // Direct redirect to Stripe URL - no need to load Stripe.js for simple redirect
+      if (sessionUrl) {
         console.log('Redirecting to Stripe:', sessionUrl);
         window.location.href = sessionUrl;
       } else {
-        console.error('Missing stripe or URL:', { stripe: !!stripe, url: sessionUrl });
+        console.error('Missing session URL');
         toast.error("Payment session created but missing redirect URL");
       }
     } catch (error: any) {
@@ -100,20 +124,25 @@ const Billing = () => {
 
       {isSubscribed && (
         <div className="mb-8">
-          <Card className="bg-gradient-to-r from-yellow-50 to-orange-50 border-yellow-200">
+          <Card className="bg-gradient-to-r from-green-50 to-emerald-50 border-green-200 shadow-lg">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                  <Star className="w-6 h-6 text-yellow-600" />
+                  <div className="p-2 bg-green-100 rounded-full">
+                    <Crown className="w-6 h-6 text-green-600" />
+                  </div>
                   <div>
-                    <h3 className="font-semibold text-lg">You're a Premium User!</h3>
-                    <p className="text-muted-foreground">
-                      Currently subscribed to {currentPlan === 'LIFETIME' ? 'Lifetime' : 'Monthly'} plan
+                    <h3 className="font-semibold text-lg text-green-800">🎉 Premium Plan Active!</h3>
+                    <p className="text-green-600">
+                      You are subscribed to {currentPlan === 'LIFETIME' ? 'Lifetime' : 'Monthly'} plan
+                    </p>
+                    <p className="text-sm text-green-500 mt-1">
+                      {currentPlan === 'LIFETIME' ? 'Enjoy unlimited lifetime access!' : 'Your subscription is active and renewed monthly'}
                     </p>
                   </div>
                 </div>
-                <Badge variant="secondary" className="bg-yellow-100 text-yellow-800">
-                  Active
+                <Badge className="bg-green-100 text-green-800 hover:bg-green-200">
+                  ✓ Active
                 </Badge>
               </div>
             </CardContent>
@@ -167,8 +196,8 @@ const Billing = () => {
                 </ul>
 
                 {isCurrentPlan ? (
-                  <Button className="w-full" variant="outline" disabled>
-                    Current Plan
+                  <Button className="w-full bg-green-600 hover:bg-green-700 text-white" disabled>
+                    ✓ Purchased
                   </Button>
                 ) : (
                   <Button

@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from "react"
-import { ChevronDown, LogOut } from "lucide-react"
+import { ChevronDown, LogOut, CreditCard } from "lucide-react"
+import { useNavigate } from "react-router-dom"
 import {
     Avatar,
     AvatarFallback,
@@ -18,6 +19,7 @@ export function UserNav({
 }) {
   const [isOpen, setIsOpen] = useState(false)
   const dropdownRef = useRef<HTMLDivElement>(null)
+  const navigate = useNavigate()
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -60,6 +62,16 @@ export function UserNav({
             <div className="font-semibold">{userName}</div>
             <div className="text-[13px] text-gray-400 font-light">Free Trial (2 days left)</div>
           </div>
+          <button
+            className="w-full px-3 py-2 text-left hover:bg-gray-700 hover:text-white cursor-pointer flex items-center"
+            onClick={() => {
+              navigate('/settings/billing')
+              setIsOpen(false)
+            }}
+          >
+            <CreditCard className="w-4 h-4 mr-2" />
+            Billing
+          </button>
           <button
             className="w-full px-3 py-2 text-left hover:bg-gray-700 hover:text-white cursor-pointer flex items-center"
             onClick={handleLogout}

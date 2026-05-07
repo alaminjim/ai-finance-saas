@@ -6,30 +6,6 @@ import { Badge } from "@/components/ui/badge";
 import { Check, Crown, Star, Zap } from "lucide-react";
 import { useCreatePaymentSessionMutation, useGetSubscriptionQuery } from "@/features/billing";
 import { toast } from "sonner";
-let stripePromise: Promise<any> | null = null;
-
-const loadStripe = () => {
-  if (!stripePromise) {
-    stripePromise = new Promise((resolve, reject) => {
-      // Check if Stripe is already loaded
-      if ((window as any).Stripe) {
-        resolve((window as any).Stripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY));
-        return;
-      }
-
-      // Load Stripe script
-      const script = document.createElement('script');
-      script.src = 'https://js.stripe.com/v3/';
-      script.async = true;
-      script.onload = () => {
-        resolve((window as any).Stripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY));
-      };
-      script.onerror = reject;
-      document.head.appendChild(script);
-    });
-  }
-  return stripePromise;
-};
 
 const Billing = () => {
   const [searchParams] = useSearchParams();
@@ -112,15 +88,12 @@ const Billing = () => {
       const sessionUrl = result.data?.url;
       console.log('Session URL:', sessionUrl);
       
-      // Redirect to Stripe Checkout
-      const stripe = await stripePromise;
-      console.log('Stripe loaded:', !!stripe);
-      
-      if (stripe && sessionUrl) {
+      // Direct redirect to Stripe URL - no need to load Stripe.js for simple redirect
+      if (sessionUrl) {
         console.log('Redirecting to Stripe:', sessionUrl);
         window.location.href = sessionUrl;
       } else {
-        console.error('Missing stripe or URL:', { stripe: !!stripe, url: sessionUrl });
+        console.error('Missing session URL');
         toast.error("Payment session created but missing redirect URL");
       }
     } catch (error: any) {
@@ -210,8 +183,8 @@ const Billing = () => {
                 </ul>
 
                 {isCurrentPlan ? (
-                  <Button className="w-full" variant="outline" disabled>
-                    Current Plan
+                  <Button className="w-full bg-green-600 hover:bg-green-700 text-white" disabled>
+                    ✓ Purchased
                   </Button>
                 ) : (
                   <Button
