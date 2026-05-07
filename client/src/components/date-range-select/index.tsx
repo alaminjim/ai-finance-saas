@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import {
   format,
   subDays,
@@ -9,11 +9,6 @@ import {
   endOfDay,
 } from "date-fns";
 import { Button } from "@/components/ui/button";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
 import { ChevronDownIcon } from "lucide-react";
 
@@ -132,6 +127,7 @@ export const DateRangeSelect = ({
   defaultRange = DateRangeEnum.LAST_30_DAYS,
 }: DateRangeSelectProps) => {
   const [open, setOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
   const displayText = dateRange
     ? presets.find((p) => p.value === dateRange.value)?.label ||
@@ -142,41 +138,51 @@ export const DateRangeSelect = ({
         : "Select a duration")
     : "Select a duration";
 
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
   // Set default range on initial render
   useEffect(() => {
     if (!dateRange) {
       const defaultPreset = presets.find((p) => p.value === defaultRange);
       if (defaultPreset) {
-        // console.log(defaultPreset.getRange(),"defaultPreset.getRange()")
         setDateRange(defaultPreset.getRange());
       }
     }
   }, [dateRange, defaultRange, setDateRange]);
 
   return (
-    <Popover open={open} onOpenChange={setOpen}>
-      <PopoverTrigger asChild>
-        <Button
-          variant="outline"
-          className={cn(
-            `w-[200px] flex items-center justify-between text-left font-normal !bg-[var(--secondary-dark-color)]
-            border-gray-700 !text-white !cursor-pointer`,
-            !dateRange && "text-muted-foreground"
-          )}
-        >
-          {displayText}
-          <ChevronDownIcon className="ml-2 h-4 w-4 opacity-50" />
-        </Button>
-      </PopoverTrigger>
-      <PopoverContent className="w-auto p-0" align="start">
-        <div className="grid py-1">
+    <div className="relative" ref={dropdownRef}>
+      <Button
+        variant="outline"
+        className={cn(
+          `w-[200px] flex items-center justify-between text-left font-normal bg-gray-800
+          border-gray-700 text-white cursor-pointer hover:bg-gray-700`,
+          !dateRange && "text-muted-foreground"
+        )}
+        onClick={() => setOpen(!open)}
+      >
+        {displayText}
+        <ChevronDownIcon className="ml-2 h-4 w-4 opacity-50" />
+      </Button>
+      
+      {open && (
+        <div className="absolute top-full left-0 mt-1 w-auto bg-gray-800 border border-gray-700 rounded-md shadow-lg z-[9999] p-1">
           {presets.map((preset) => (
             <Button
               key={preset.value}
               variant="ghost"
               className={cn(
-                "justify-start text-left",
-                dateRange?.value === preset.value && "bg-accent"
+                "w-full justify-start text-left hover:bg-gray-700",
+                dateRange?.value === preset.value && "bg-gray-700"
               )}
               onClick={() => {
                 setDateRange(preset.getRange());
@@ -187,7 +193,7 @@ export const DateRangeSelect = ({
             </Button>
           ))}
         </div>
-      </PopoverContent>
-    </Popover>
+      )}
+    </div>
   );
 };
