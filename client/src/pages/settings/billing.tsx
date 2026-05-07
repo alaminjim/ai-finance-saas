@@ -109,7 +109,7 @@ const Billing = () => {
     }
   };
 
-  const isSubscribed = subscription?.isActive;
+  const isSubscribed = subscription?.status === 'active';
   const currentPlan = subscription?.plan;
 
   return (

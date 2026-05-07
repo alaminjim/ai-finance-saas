@@ -19,6 +19,14 @@ const Billing = () => {
   const { data: subscription, isLoading, refetch } = useGetSubscriptionQuery();
   const [createPaymentSession, { isLoading: isCreatingSession }] = useCreatePaymentSessionMutation();
 
+  // Debug subscription data
+  useEffect(() => {
+    console.log('Billing - Subscription data:', subscription);
+    console.log('Billing - Subscription status:', subscription?.status);
+    console.log('Billing - Subscription plan:', subscription?.plan);
+    console.log('Billing - isSubscribed:', subscription?.status === 'active');
+  }, [subscription]);
+
   // Handle payment success callback
   useEffect(() => {
     const success = searchParams.get('success');
@@ -115,7 +123,7 @@ const Billing = () => {
     }
   };
 
-  const isSubscribed = subscription?.isActive;
+  const isSubscribed = subscription?.status === 'active';
   const currentPlan = subscription?.plan;
 
   return (
