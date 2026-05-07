@@ -21,17 +21,24 @@ const Billing = () => {
     const cancelled = searchParams.get('cancelled');
 
     if (success === 'true' && sessionId) {
+      console.log('Payment success detected in settings, session_id:', sessionId);
+      
       // Call payment success endpoint to activate subscription
       fetch(`${import.meta.env.VITE_API_URL || "https://ai-finance-saas-th6o.onrender.com/api"}/billing/payment-success?session_id=${sessionId}`)
         .then(response => response.json())
         .then(data => {
+          console.log('Payment success response in settings:', data);
           if (data.message) {
             toast.success(data.message);
-            refetch(); // Refresh subscription data
+            // Force multiple refetch attempts to ensure data is updated
+            refetch();
+            setTimeout(() => refetch(), 1000);
+            setTimeout(() => refetch(), 2000);
             // Redirect to home page after successful payment
             setTimeout(() => {
+              toast.success("Your subscription is now active! 🎉");
               window.location.href = '/overview';
-            }, 2000);
+            }, 3000);
           }
         })
         .catch(error => {

@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react"
-import { ChevronDown, LogOut, CreditCard } from "lucide-react"
+import { ChevronDown, LogOut, CreditCard, Crown } from "lucide-react"
 import { useNavigate } from "react-router-dom"
 import {
     Avatar,
@@ -7,6 +7,7 @@ import {
     AvatarImage,
   } from "../ui/avatar"
   import { Button } from "../ui/button"
+  import { useGetSubscriptionQuery } from "@/features/billing"
   
 export function UserNav({
   userName,
@@ -20,6 +21,7 @@ export function UserNav({
   const [isOpen, setIsOpen] = useState(false)
   const dropdownRef = useRef<HTMLDivElement>(null)
   const navigate = useNavigate()
+  const { data: subscription } = useGetSubscriptionQuery()
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -60,7 +62,16 @@ export function UserNav({
         <div className="absolute right-0 top-full mt-2 w-56 bg-gray-800 text-white border border-gray-700 rounded-md shadow-lg z-[9999]">
           <div className="px-3 py-2 border-b border-gray-700">
             <div className="font-semibold">{userName}</div>
-            <div className="text-[13px] text-gray-400 font-light">Free Trial (2 days left)</div>
+            <div className="text-[13px] text-gray-400 font-light flex items-center gap-1">
+              {subscription?.isActive ? (
+                <>
+                  <Crown className="w-3 h-3 text-yellow-500" />
+                  {subscription?.plan === 'LIFETIME' ? 'Lifetime Plan' : 'Premium Plan'}
+                </>
+              ) : (
+                'Free Trial (2 days left)'
+              )}
+            </div>
           </div>
           <button
             className="w-full px-3 py-2 text-left hover:bg-gray-700 hover:text-white cursor-pointer flex items-center"
