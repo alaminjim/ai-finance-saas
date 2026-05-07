@@ -24,9 +24,15 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use(passport.initialize());
 
+const allowedOrigins = [
+  process.env.FRONTEND_ORIGIN,
+  "https://ai-finance-saas-client.onrender.com",
+  "https://ai-finance-saas-d1df6b.netlify.app",
+].filter(Boolean);
+
 app.use(
   cors({
-    origin: process.env.FRONTEND_ORIGIN,
+    origin: allowedOrigins,
     credentials: true,
   })
 );
