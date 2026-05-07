@@ -5,6 +5,15 @@ import UserModel from '../models/user.model';
 
 export class BillingService {
   static async createPaymentSession(plan: SubscriptionPlan, userId: string) {
+    // Validate Stripe configuration
+    if (!process.env.STRIPE_SECRET_KEY) {
+      throw new Error('Stripe secret key is not configured');
+    }
+
+    if (!process.env.FRONTEND_ORIGIN) {
+      throw new Error('Frontend origin is not configured');
+    }
+
     const user = await UserModel.findById(userId);
     if (!user) {
       throw new Error('User not found');
@@ -12,83 +21,97 @@ export class BillingService {
 
     // Create or get Stripe customer
     let customerId = user.stripeCustomerId;
-    if (!customerId) {
-      const customer = await stripe.customers.create({
-        email: user.email,
-        name: user.name,
-        metadata: {
-          userId: userId,
-        },
-      });
-      customerId = customer.id;
-      
-      // Update user with Stripe customer ID
-      await UserModel.findByIdAndUpdate(userId, {
-        stripeCustomerId: customerId,
-      });
+    try {
+      if (!customerId) {
+        const customer = await stripe.customers.create({
+          email: user.email,
+          name: user.name,
+          metadata: {
+            userId: userId,
+          },
+        });
+        customerId = customer.id;
+        
+        // Update user with Stripe customer ID
+        await UserModel.findByIdAndUpdate(userId, {
+          stripeCustomerId: customerId,
+        });
+      }
+    } catch (stripeError: any) {
+      console.error('Stripe customer creation error:', stripeError);
+      throw new Error(`Failed to create Stripe customer: ${stripeError.message}`);
     }
 
     const planConfig = SUBSCRIPTION_PLANS[plan];
 
-    if (plan === 'LIFETIME') {
-      // One-time payment for lifetime
-      const session = await stripe.checkout.sessions.create({
-        customer: customerId,
-        payment_method_types: ['card'],
-        line_items: [
-          {
-            price_data: {
-              currency: 'usd',
-              product_data: {
-                name: planConfig.name,
-                description: planConfig.features.join(', '),
-              },
-              unit_amount: planConfig.price,
-            },
-            quantity: 1,
-          },
-        ],
-        mode: 'payment',
-        success_url: `${process.env.FRONTEND_ORIGIN}/settings/billing?success=true&session_id={CHECKOUT_SESSION_ID}`,
-        cancel_url: `${process.env.FRONTEND_ORIGIN}/settings/billing?cancelled=true`,
-        metadata: {
-          userId,
-          plan,
-        },
-      });
+    if (!planConfig) {
+      throw new Error(`Invalid plan: ${plan}`);
+    }
 
-      return session;
-    } else {
-      // Monthly subscription
-      const session = await stripe.checkout.sessions.create({
-        customer: customerId,
-        payment_method_types: ['card'],
-        line_items: [
-          {
-            price_data: {
-              currency: 'usd',
-              product_data: {
-                name: planConfig.name,
-                description: planConfig.features.join(', '),
+    try {
+      if (plan === 'LIFETIME') {
+        // One-time payment for lifetime
+        const session = await stripe.checkout.sessions.create({
+          customer: customerId,
+          payment_method_types: ['card'],
+          line_items: [
+            {
+              price_data: {
+                currency: 'usd',
+                product_data: {
+                  name: planConfig.name,
+                  description: planConfig.features.join(', '),
+                },
+                unit_amount: planConfig.price,
               },
-              unit_amount: planConfig.price,
-              recurring: {
-                interval: planConfig.interval,
-              },
+              quantity: 1,
             },
-            quantity: 1,
+          ],
+          mode: 'payment',
+          success_url: `${process.env.FRONTEND_ORIGIN}/settings/billing?success=true&session_id={CHECKOUT_SESSION_ID}`,
+          cancel_url: `${process.env.FRONTEND_ORIGIN}/settings/billing?cancelled=true`,
+          metadata: {
+            userId,
+            plan,
           },
-        ],
-        mode: 'subscription',
-        success_url: `${process.env.FRONTEND_ORIGIN}/settings/billing?success=true&session_id={CHECKOUT_SESSION_ID}`,
-        cancel_url: `${process.env.FRONTEND_ORIGIN}/settings/billing?cancelled=true`,
-        metadata: {
-          userId,
-          plan,
-        },
-      });
+        });
 
-      return session;
+        return session;
+      } else {
+        // Monthly subscription
+        const session = await stripe.checkout.sessions.create({
+          customer: customerId,
+          payment_method_types: ['card'],
+          line_items: [
+            {
+              price_data: {
+                currency: 'usd',
+                product_data: {
+                  name: planConfig.name,
+                  description: planConfig.features.join(', '),
+                },
+                unit_amount: planConfig.price,
+                recurring: {
+                  interval: planConfig.interval,
+                },
+              },
+              quantity: 1,
+            },
+          ],
+          mode: 'subscription',
+          success_url: `${process.env.FRONTEND_ORIGIN}/settings/billing?success=true&session_id={CHECKOUT_SESSION_ID}`,
+          cancel_url: `${process.env.FRONTEND_ORIGIN}/settings/billing?cancelled=true`,
+          metadata: {
+            userId,
+            plan,
+          },
+        });
+
+        return session;
+      }
+    } catch (stripeError: any) {
+      console.error('Stripe session creation error:', stripeError);
+      throw new Error(`Failed to create payment session: ${stripeError.message}`);
     }
   }
 

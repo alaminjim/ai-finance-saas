@@ -1,9 +1,7 @@
 import Stripe from 'stripe';
 import { Env } from './env.config';
 
-export const stripe = new Stripe(Env.STRIPE_SECRET_KEY, {
-  apiVersion: '2025-02-24.acacia',
-});
+export const stripe = new Stripe(Env.STRIPE_SECRET_KEY);
 
 export const SUBSCRIPTION_PLANS = {
   MONTHLY: {

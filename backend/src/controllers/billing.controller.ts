@@ -6,30 +6,45 @@ import { SubscriptionPlan } from "../config/stripe.config";
 
 export const createPaymentSessionController = asyncHandler(
   async (req: Request, res: Response) => {
-    const { plan } = req.body as { plan: SubscriptionPlan };
-    const userId = req.user?._id;
+    try {
+      const { plan } = req.body as { plan: SubscriptionPlan };
+      const userId = req.user?._id;
 
-    if (!userId) {
-      return res.status(HTTPSTATUS.UNAUTHORIZED).json({
-        message: "User not authenticated",
+      if (!userId) {
+        return res.status(HTTPSTATUS.UNAUTHORIZED).json({
+          message: "User not authenticated",
+        });
+      }
+
+      if (!plan || !['MONTHLY', 'LIFETIME'].includes(plan)) {
+        return res.status(HTTPSTATUS.BAD_REQUEST).json({
+          message: "Invalid plan selected",
+        });
+      }
+
+      const session = await BillingService.createPaymentSession(plan, userId);
+
+      return res.status(HTTPSTATUS.OK).json({
+        message: "Payment session created successfully",
+        data: {
+          sessionId: session.id,
+          url: session.url,
+        },
+      });
+    } catch (error: any) {
+      console.error('Payment session creation error:', error);
+      
+      // Don't expose sensitive error details to client
+      const errorMessage = error.message.includes('Stripe') || 
+                        error.message.includes('configured') ||
+                        error.message.includes('Invalid plan') 
+                        ? error.message 
+                        : "Failed to create payment session";
+      
+      return res.status(HTTPSTATUS.INTERNAL_SERVER_ERROR).json({
+        message: errorMessage,
       });
     }
-
-    if (!plan || !['MONTHLY', 'LIFETIME'].includes(plan)) {
-      return res.status(HTTPSTATUS.BAD_REQUEST).json({
-        message: "Invalid plan selected",
-      });
-    }
-
-    const session = await BillingService.createPaymentSession(plan, userId);
-
-    return res.status(HTTPSTATUS.OK).json({
-      message: "Payment session created successfully",
-      data: {
-        sessionId: session.id,
-        url: session.url,
-      },
-    });
   }
 );
 
