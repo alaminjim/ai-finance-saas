@@ -1,4 +1,4 @@
-import "multer";
+/// <reference types="multer" />
 import axios from "axios";
 import TransactionModel, {
   TransactionTypeEnum,
