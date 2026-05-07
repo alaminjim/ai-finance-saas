@@ -48,7 +48,7 @@ app.use(`${BASE_PATH}/analytics`, passportAuthenticateJwt, analyticsRoutes);
 
 app.use(errorHandler);
 
-// ✅ Connect DB first, then start server
+
 const startServer = async () => {
   try {
     await connctDatabase(); // wait for DB connection
@@ -60,15 +60,22 @@ const startServer = async () => {
       await initializeCrons();
     }
 
-    app.listen(Env.PORT, () => {
-      console.log(
-        `Server is running on port ${Env.PORT} in ${process.env.NODE_ENV} mode`
-      );
-    });
+    if (!process.env.VERCEL) {
+      app.listen(Env.PORT, () => {
+        console.log(
+          `Server is running on port ${Env.PORT} in ${process.env.NODE_ENV} mode`
+        );
+      });
+    }
   } catch (error) {
     console.error("Server startup failed:", error);
-    process.exit(1); // Stop server if DB failed
+    if (!process.env.VERCEL) {
+      process.exit(1);
+    }
   }
 };
 
 startServer();
+
+// Export the app for Vercel
+export default app;
