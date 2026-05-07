@@ -7,6 +7,11 @@ export interface PaymentSessionResponse {
   url: string;
 }
 
+export interface PaymentSessionApiResponse {
+  message: string;
+  data: PaymentSessionResponse;
+}
+
 export interface Subscription {
   _id: string;
   userId: string;
@@ -21,7 +26,7 @@ export interface Subscription {
 
 export const billingApi = apiClient.injectEndpoints({
   endpoints: (builder) => ({
-    createPaymentSession: builder.mutation<PaymentSessionResponse, { plan: SubscriptionPlan }>({
+    createPaymentSession: builder.mutation<PaymentSessionApiResponse, { plan: SubscriptionPlan }>({
       query: (data) => ({
         url: "/billing/create-payment-session",
         method: "POST",

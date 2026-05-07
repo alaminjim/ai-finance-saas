@@ -104,14 +104,27 @@ const Billing = () => {
 
   const handleSubscribe = async (plan: 'MONTHLY' | 'LIFETIME') => {
     try {
+      console.log('Creating payment session for plan:', plan);
       const result = await createPaymentSession({ plan }).unwrap();
+      console.log('Payment session created:', result);
+      
+      // Extract URL from the nested data object
+      const sessionUrl = result.data?.url;
+      console.log('Session URL:', sessionUrl);
       
       // Redirect to Stripe Checkout
       const stripe = await stripePromise;
-      if (stripe && result.url) {
-        window.location.href = result.url;
+      console.log('Stripe loaded:', !!stripe);
+      
+      if (stripe && sessionUrl) {
+        console.log('Redirecting to Stripe:', sessionUrl);
+        window.location.href = sessionUrl;
+      } else {
+        console.error('Missing stripe or URL:', { stripe: !!stripe, url: sessionUrl });
+        toast.error("Payment session created but missing redirect URL");
       }
     } catch (error: any) {
+      console.error('Payment session error:', error);
       toast.error(error.data?.message || "Failed to create payment session");
     }
   };

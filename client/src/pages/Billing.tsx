@@ -10,6 +10,10 @@ import { loadStripe } from "@stripe/stripe-js";
 
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
 
+// Debug Stripe configuration
+console.log('Stripe publishable key:', import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY ? 'Configured' : 'Missing');
+console.log('API URL:', import.meta.env.VITE_API_URL || "https://ai-finance-saas-th6o.onrender.com/api");
+
 const Billing = () => {
   const navigate = useNavigate();
   const [selectedPlan, setSelectedPlan] = useState<'MONTHLY' | 'LIFETIME' | null>(null);
@@ -54,14 +58,27 @@ const Billing = () => {
 
   const handleSubscribe = async (plan: 'MONTHLY' | 'LIFETIME') => {
     try {
+      console.log('Creating payment session for plan:', plan);
       const result = await createPaymentSession({ plan }).unwrap();
+      console.log('Payment session created:', result);
       
-      // Redirect to Stripe Checkout
+      // Extract URL from the nested data object
+      const sessionUrl = result.data?.url;
+      console.log('Session URL:', sessionUrl);
+      
+      // Check if Stripe is loaded and result has URL
       const stripe = await stripePromise;
-      if (stripe && result.url) {
-        window.location.href = result.url;
+      console.log('Stripe loaded:', !!stripe);
+      
+      if (stripe && sessionUrl) {
+        console.log('Redirecting to Stripe:', sessionUrl);
+        window.location.href = sessionUrl;
+      } else {
+        console.error('Missing stripe or URL:', { stripe: !!stripe, url: sessionUrl });
+        toast.error("Payment session created but missing redirect URL");
       }
     } catch (error: any) {
+      console.error('Payment session error:', error);
       toast.error(error.data?.message || "Failed to create payment session");
     }
   };
