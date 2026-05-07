@@ -133,24 +133,24 @@ const Billing = () => {
 
       {isSubscribed && (
         <div className="mb-8">
-          <Card className="bg-gradient-to-r from-green-50 to-emerald-50 border-green-200 shadow-lg">
+          <Card className="bg-card border-border">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                  <div className="p-2 bg-green-100 rounded-full">
-                    <Crown className="w-6 h-6 text-green-600" />
+                  <div className="p-2 bg-primary/10 rounded-full">
+                    <Crown className="w-6 h-6 text-primary" />
                   </div>
                   <div>
-                    <h3 className="font-semibold text-lg text-green-800">🎉 Premium Plan Active!</h3>
-                    <p className="text-green-600">
+                    <h3 className="font-semibold text-lg text-card-foreground">🎉 Premium Plan Active!</h3>
+                    <p className="text-muted-foreground">
                       You are subscribed to {currentPlan === 'LIFETIME' ? 'Lifetime' : 'Monthly'} plan
                     </p>
-                    <p className="text-sm text-green-500 mt-1">
+                    <p className="text-sm text-muted-foreground mt-1">
                       {currentPlan === 'LIFETIME' ? 'Enjoy unlimited lifetime access!' : 'Your subscription is active and renewed monthly'}
                     </p>
                   </div>
                 </div>
-                <Badge className="bg-green-100 text-green-800 hover:bg-green-200">
+                <Badge className="bg-primary/10 text-primary border-primary/20">
                   ✓ Active
                 </Badge>
               </div>
@@ -168,8 +168,8 @@ const Billing = () => {
           return (
             <Card
               key={plan.id}
-              className={`relative ${plan.popular ? 'border-yellow-200 shadow-lg' : ''} ${
-                isCurrentPlan ? 'bg-gradient-to-br from-yellow-50 to-orange-50 border-yellow-300' : ''
+              className={`relative bg-card border-border ${plan.popular ? 'border-primary/30 shadow-lg' : ''} ${
+                isCurrentPlan ? 'bg-primary/10 border-primary/40' : ''
               } ${isDisabled ? 'opacity-60' : ''}`}
             >
               {plan.popular && (
