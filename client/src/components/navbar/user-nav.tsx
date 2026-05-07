@@ -48,10 +48,9 @@ export function UserNav({
       </DropdownMenuTrigger>
       <DropdownMenuContent
         className="w-56 !bg-[var(--secondary-dark-color)] !text-white
-         !border-gray-700
+         !border-gray-700 !z-50
         "
         align="end"
-        forceMount
       >
         <DropdownMenuLabel className="flex flex-col items-start gap-1">
           <span className="font-semibold">{userName}</span>
