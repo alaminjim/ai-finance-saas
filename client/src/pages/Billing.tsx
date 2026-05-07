@@ -205,7 +205,7 @@ const Billing = () => {
                 </ul>
 
                 {isCurrentPlan ? (
-                  <Button className="w-full bg-primary hover:bg-primary/90 text-primary-foreground" disabled>
+                  <Button className="w-full bg-green-600 hover:bg-green-700 text-white" disabled>
                     ✓ Purchased
                   </Button>
                 ) : (

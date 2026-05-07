@@ -123,11 +123,11 @@ const Billing = () => {
 
       {isSubscribed && (
         <div className="mb-6">
-          <Card className="bg-gradient-to-r from-yellow-50 to-orange-50 border-yellow-200">
+          <Card className="bg-card border-border shadow-sm">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                  <Star className="w-6 h-6 text-yellow-600" />
+                  <Star className="w-6 h-6 text-green-500" />
                   <div>
                     <h3 className="font-semibold text-lg">You're a Premium User!</h3>
                     <p className="text-muted-foreground">
@@ -135,7 +135,7 @@ const Billing = () => {
                     </p>
                   </div>
                 </div>
-                <Badge variant="secondary" className="bg-yellow-100 text-yellow-800">
+                <Badge variant="secondary" className="bg-green-500/10 text-green-500 hover:bg-green-500/20">
                   Active
                 </Badge>
               </div>
@@ -153,13 +153,13 @@ const Billing = () => {
           return (
             <Card
               key={plan.id}
-              className={`relative ${plan.popular ? 'border-yellow-200 shadow-lg' : ''} ${
-                isCurrentPlan ? 'bg-gradient-to-br from-yellow-50 to-orange-50 border-yellow-300' : ''
+              className={`relative ${plan.popular ? 'border-green-500/50 shadow-lg shadow-green-500/10' : 'border-border'} ${
+                isCurrentPlan ? 'bg-card border-green-500' : 'bg-card'
               } ${isDisabled ? 'opacity-60' : ''}`}
             >
               {plan.popular && (
                 <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
-                  <Badge className="bg-yellow-100 text-yellow-800 px-3 py-1">
+                  <Badge className="bg-green-500 text-white px-3 py-1 border-none">
                     Most Popular
                   </Badge>
                 </div>
@@ -167,8 +167,8 @@ const Billing = () => {
               
               <CardHeader className="text-center pb-4">
                 <div className="flex justify-center mb-4">
-                  <div className={`p-3 rounded-full ${plan.popular ? 'bg-yellow-100' : 'bg-gray-100'}`}>
-                    <Icon className={`w-6 h-6 ${plan.popular ? 'text-yellow-600' : 'text-gray-600'}`} />
+                  <div className={`p-3 rounded-full ${plan.popular ? 'bg-green-500/10' : 'bg-muted'}`}>
+                    <Icon className={`w-6 h-6 ${plan.popular ? 'text-green-500' : 'text-muted-foreground'}`} />
                   </div>
                 </div>
                 <CardTitle className="text-xl">{plan.name}</CardTitle>
@@ -195,10 +195,9 @@ const Billing = () => {
                   </Button>
                 ) : (
                   <Button
-                    className="w-full"
+                    className={`w-full ${plan.popular ? 'bg-green-600 hover:bg-green-700 text-white' : 'bg-green-600/10 text-green-600 hover:bg-green-600/20'}`}
                     onClick={() => handleSubscribe(plan.id)}
                     disabled={isDisabled || isCreatingSession || isLoading}
-                    variant={plan.popular ? "default" : "outline"}
                   >
                     {isCreatingSession ? "Processing..." : isDisabled ? "Already Subscribed" : "Subscribe Now"}
                   </Button>

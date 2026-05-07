@@ -228,13 +228,13 @@ const TransactionForm = (props: {
                         shadow-sm border p-2 flex-1 justify-center 
                         `,
                         field.value === _TRANSACTION_TYPE.INCOME &&
-                          "!border-primary"
+                          "!border-green-600"
                       )}
                     >
                       <RadioGroupItem
                         value={_TRANSACTION_TYPE.INCOME}
                         id={_TRANSACTION_TYPE.INCOME}
-                        className="!border-primary"
+                        className="!border-green-600 !text-green-600"
                       />
                       Income
                     </label>
@@ -247,13 +247,13 @@ const TransactionForm = (props: {
                         shadow-sm border p-2 flex-1 justify-center 
                         `,
                         field.value === _TRANSACTION_TYPE.EXPENSE &&
-                          "!border-primary"
+                          "!border-green-600"
                       )}
                     >
                       <RadioGroupItem
                         value={_TRANSACTION_TYPE.EXPENSE}
                         id={_TRANSACTION_TYPE.EXPENSE}
-                        className="!border-primary"
+                        className="!border-green-600 !text-green-600"
                       />
                       Expense
                     </label>
