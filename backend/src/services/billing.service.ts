@@ -49,8 +49,8 @@ export class BillingService {
           },
         ],
         mode: 'payment',
-        success_url: `${process.env.FRONTEND_ORIGIN}/billing/success?session_id={CHECKOUT_SESSION_ID}`,
-        cancel_url: `${process.env.FRONTEND_ORIGIN}/billing/cancel`,
+        success_url: `${process.env.FRONTEND_ORIGIN}/settings/billing?success=true&session_id={CHECKOUT_SESSION_ID}`,
+        cancel_url: `${process.env.FRONTEND_ORIGIN}/settings/billing?cancelled=true`,
         metadata: {
           userId,
           plan,
@@ -80,8 +80,8 @@ export class BillingService {
           },
         ],
         mode: 'subscription',
-        success_url: `${process.env.FRONTEND_ORIGIN}/billing/success?session_id={CHECKOUT_SESSION_ID}`,
-        cancel_url: `${process.env.FRONTEND_ORIGIN}/billing/cancel`,
+        success_url: `${process.env.FRONTEND_ORIGIN}/settings/billing?success=true&session_id={CHECKOUT_SESSION_ID}`,
+        cancel_url: `${process.env.FRONTEND_ORIGIN}/settings/billing?cancelled=true`,
         metadata: {
           userId,
           plan,

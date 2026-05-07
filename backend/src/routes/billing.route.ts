@@ -3,7 +3,7 @@ import {
   createPaymentSessionController,
   getUserSubscriptionController,
   cancelSubscriptionController,
-  stripeWebhookController,
+  paymentSuccessController,
 } from "../controllers/billing.controller";
 import { passportAuthenticateJwt } from "../config/passport.config";
 
@@ -28,10 +28,10 @@ billingRoutes.post(
   cancelSubscriptionController
 );
 
-// Webhook route (no authentication required)
-billingRoutes.post(
-  "/webhook",
-  stripeWebhookController
+// Payment success route (no authentication required)
+billingRoutes.get(
+  "/payment-success",
+  paymentSuccessController
 );
 
 export default billingRoutes;

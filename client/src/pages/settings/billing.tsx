@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useSearchParams } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -10,10 +11,36 @@ import { loadStripe } from "@stripe/stripe-js";
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
 
 const Billing = () => {
+  const [searchParams] = useSearchParams();
   const [selectedPlan, setSelectedPlan] = useState<'MONTHLY' | 'LIFETIME' | null>(null);
   
-  const { data: subscription, isLoading } = useGetSubscriptionQuery();
+  const { data: subscription, isLoading, refetch } = useGetSubscriptionQuery();
   const [createPaymentSession, { isLoading: isCreatingSession }] = useCreatePaymentSessionMutation();
+
+  // Handle payment success callback
+  useEffect(() => {
+    const success = searchParams.get('success');
+    const sessionId = searchParams.get('session_id');
+    const cancelled = searchParams.get('cancelled');
+
+    if (success === 'true' && sessionId) {
+      // Call payment success endpoint to activate subscription
+      fetch(`${import.meta.env.VITE_API_URL || "https://ai-finance-saas-th6o.onrender.com/api"}/billing/payment-success?session_id=${sessionId}`)
+        .then(response => response.json())
+        .then(data => {
+          if (data.message) {
+            toast.success(data.message);
+            refetch(); // Refresh subscription data
+          }
+        })
+        .catch(error => {
+          console.error('Payment verification error:', error);
+          toast.error('Failed to verify payment');
+        });
+    } else if (cancelled === 'true') {
+      toast.info('Payment was cancelled');
+    }
+  }, [searchParams, refetch]);
 
   const plans = [
     {

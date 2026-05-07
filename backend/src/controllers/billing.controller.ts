@@ -71,52 +71,37 @@ export const cancelSubscriptionController = asyncHandler(
   }
 );
 
-export const stripeWebhookController = asyncHandler(
+export const paymentSuccessController = asyncHandler(
   async (req: Request, res: Response) => {
-    const sig = req.headers['stripe-signature'] as string;
-    const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
+    const { session_id } = req.query;
 
-    if (!webhookSecret) {
-      return res.status(HTTPSTATUS.INTERNAL_SERVER_ERROR).json({
-        message: "Webhook secret not configured",
+    if (!session_id) {
+      return res.status(HTTPSTATUS.BAD_REQUEST).json({
+        message: "Session ID is required",
       });
     }
-
-    let event: any;
 
     try {
-      event = require('stripe')(process.env.STRIPE_SECRET_KEY).webhooks.constructEvent(
-        req.body,
-        sig,
-        webhookSecret
-      );
-    } catch (err: any) {
-      console.log('Webhook signature verification failed.', err.message);
-      return res.status(HTTPSTATUS.BAD_REQUEST).json({
-        message: `Webhook Error: ${err.message}`,
+      const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+      const session = await stripe.checkout.sessions.retrieve(session_id as string);
+
+      if (session.payment_status === 'paid') {
+        await BillingService.handleSuccessfulPayment(session);
+        
+        return res.status(HTTPSTATUS.OK).json({
+          message: "Payment successful, subscription activated",
+          data: session,
+        });
+      } else {
+        return res.status(HTTPSTATUS.BAD_REQUEST).json({
+          message: "Payment not completed",
+        });
+      }
+    } catch (error: any) {
+      console.error('Payment verification error:', error);
+      return res.status(HTTPSTATUS.INTERNAL_SERVER_ERROR).json({
+        message: "Failed to verify payment",
       });
     }
-
-    // Handle the event
-    switch (event.type) {
-      case 'checkout.session.completed':
-        const session = event.data.object;
-        await BillingService.handleSuccessfulPayment(session);
-        break;
-      case 'invoice.payment_succeeded':
-        // Handle recurring payment success
-        break;
-      case 'invoice.payment_failed':
-        // Handle payment failure
-        break;
-      case 'customer.subscription.deleted':
-        // Handle subscription cancellation
-        break;
-      default:
-        console.log(`Unhandled event type ${event.type}`);
-    }
-
-    // Return a 200 response to acknowledge receipt of the event
-    res.json({ received: true });
   }
 );
