@@ -10,8 +10,22 @@ let stripePromise: Promise<any> | null = null;
 
 const loadStripe = () => {
   if (!stripePromise) {
-    stripePromise = import('@stripe/stripe-js').then((Stripe) => {
-      return Stripe.loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
+    stripePromise = new Promise((resolve, reject) => {
+      // Check if Stripe is already loaded
+      if ((window as any).Stripe) {
+        resolve((window as any).Stripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY));
+        return;
+      }
+
+      // Load Stripe script
+      const script = document.createElement('script');
+      script.src = 'https://js.stripe.com/v3/';
+      script.async = true;
+      script.onload = () => {
+        resolve((window as any).Stripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY));
+      };
+      script.onerror = reject;
+      document.head.appendChild(script);
     });
   }
   return stripePromise;
