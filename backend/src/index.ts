@@ -24,11 +24,11 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use(passport.initialize());
 
-const allowedOrigins = [
-  process.env.FRONTEND_ORIGIN,
+const allowedOrigins: string[] = [
+  process.env.FRONTEND_ORIGIN || "",
   "https://ai-finance-saas-client.onrender.com",
   "https://ai-finance-saas-d1df6b.netlify.app",
-].filter(Boolean);
+].filter(origin => origin !== "");
 
 app.use(
   cors({
