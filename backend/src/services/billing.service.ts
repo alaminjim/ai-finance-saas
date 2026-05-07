@@ -27,7 +27,7 @@ export class BillingService {
           email: user.email,
           name: user.name,
           metadata: {
-            userId: userId,
+            userId: userId.toString(),
           },
         });
         customerId = customer.id;
@@ -71,7 +71,7 @@ export class BillingService {
           success_url: `${process.env.FRONTEND_ORIGIN}/settings/billing?success=true&session_id={CHECKOUT_SESSION_ID}`,
           cancel_url: `${process.env.FRONTEND_ORIGIN}/settings/billing?cancelled=true`,
           metadata: {
-            userId,
+            userId: userId.toString(),
             plan,
           },
         });
@@ -102,7 +102,7 @@ export class BillingService {
           success_url: `${process.env.FRONTEND_ORIGIN}/settings/billing?success=true&session_id={CHECKOUT_SESSION_ID}`,
           cancel_url: `${process.env.FRONTEND_ORIGIN}/settings/billing?cancelled=true`,
           metadata: {
-            userId,
+            userId: userId.toString(),
             plan,
           },
         });
