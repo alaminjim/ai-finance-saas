@@ -6,9 +6,16 @@ import { Badge } from "@/components/ui/badge";
 import { Check, Crown, Star, Zap } from "lucide-react";
 import { useCreatePaymentSessionMutation, useGetSubscriptionQuery } from "@/features/billing/billingAPI";
 import { toast } from "sonner";
-import { loadStripe } from "@stripe/stripe-js";
+let stripePromise: Promise<any> | null = null;
 
-const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
+const loadStripe = () => {
+  if (!stripePromise) {
+    stripePromise = import('@stripe/stripe-js').then((Stripe) => {
+      return Stripe.loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
+    });
+  }
+  return stripePromise;
+};
 
 const Billing = () => {
   const [searchParams] = useSearchParams();
