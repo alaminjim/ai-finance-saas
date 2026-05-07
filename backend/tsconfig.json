@@ -12,7 +12,6 @@
 
     /* Language and Environment */
     "target": "es2021" /* Set the JavaScript language version for emitted JavaScript and include compatible library declarations. */,
-    "ignoreDeprecations": "5.0",
     // "lib": [],
     // "jsx": "preserve",                                /* Specify what JSX code is generated. */
     // "libReplacement": true,                           /* Enable lib replacement. */
@@ -29,6 +28,7 @@
     /* Modules */
     "module": "commonjs" /* Specify what module code is generated. */,
     "rootDir": "./src" /* Specify the root folder within your source files. */,
+    "ignoreDeprecations": "5.0",
     "moduleResolution": "node",
     // "baseUrl": "./",
     // "paths": {},
