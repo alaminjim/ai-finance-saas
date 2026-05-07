@@ -4,7 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Check, Crown, Star, Zap } from "lucide-react";
-import { useCreatePaymentSessionMutation, useGetSubscriptionQuery } from "@/features/billing/billingAPI";
+import { useCreatePaymentSessionMutation, useGetSubscriptionQuery } from "@/features/billing";
 import { toast } from "sonner";
 let stripePromise: Promise<any> | null = null;
 
@@ -52,6 +52,10 @@ const Billing = () => {
           if (data.message) {
             toast.success(data.message);
             refetch(); // Refresh subscription data
+            // Redirect to home page after successful payment
+            setTimeout(() => {
+              window.location.href = '/overview';
+            }, 2000);
           }
         })
         .catch(error => {

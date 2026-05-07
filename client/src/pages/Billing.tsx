@@ -4,7 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Check, Crown, Star, Zap } from "lucide-react";
-import { useCreatePaymentSessionMutation, useGetSubscriptionQuery } from "@/features/billing/billingAPI";
+import { useCreatePaymentSessionMutation, useGetSubscriptionQuery } from "@/features/billing";
 import { toast } from "sonner";
 import { loadStripe } from "@stripe/stripe-js";
 
