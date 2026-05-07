@@ -21,8 +21,13 @@ export const registerService = async (body: RegisterSchemaType) => {
       const existingUser = await UserModel.findOne({ email }).session(session);
       if (existingUser) throw new UnauthorizedException("User already exists");
 
+      const now = new Date();
+      const trialEnd = new Date(now.getTime() + 2 * 24 * 60 * 60 * 1000); // 2 days from now
+      
       const newUser = new UserModel({
         ...body,
+        trialStart: now,
+        trialEnd: trialEnd,
       });
 
       await newUser.save({ session });

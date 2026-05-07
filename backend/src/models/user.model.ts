@@ -8,10 +8,13 @@ export interface UserDocument extends Document {
   profilePicture: string | null;
   isPremium: boolean;
   stripeCustomerId?: string;
+  trialStart?: Date;
+  trialEnd?: Date;
   createdAt: Date;
   updatedAt: Date;
   comparePassword: (password: string) => Promise<boolean>;
   omitPassword: () => Omit<UserDocument, "password">;
+  isOnTrial: () => boolean;
 }
 
 const userSchema = new Schema<UserDocument>(
@@ -38,6 +41,14 @@ const userSchema = new Schema<UserDocument>(
     },
     stripeCustomerId: {
       type: String,
+      sparse: true,
+    },
+    trialStart: {
+      type: Date,
+      sparse: true,
+    },
+    trialEnd: {
+      type: Date,
       sparse: true,
     },
     password: {
@@ -71,6 +82,14 @@ userSchema.methods.comparePassword = async function (
   password: string
 ) {
   return compareValue(password, this.password);
+};
+
+userSchema.methods.isOnTrial = function (this: UserDocument): boolean {
+  if (!this.trialStart || !this.trialEnd) {
+    return false;
+  }
+  const now = new Date();
+  return now >= this.trialStart && now <= this.trialEnd;
 };
 
 const UserModel = mongoose.model<UserDocument>("User", userSchema);
