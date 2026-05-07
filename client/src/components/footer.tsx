@@ -82,7 +82,7 @@ const Footer = () => {
   return (
     <footer className="bg-gray-900 text-white">
       {/* FAQ Section - First */}
-      <div className="bg-gray-800 py-16">
+      <div className="bg-gray-800 py-24">
         <div className="container mx-auto px-4">
           <h3 className="text-2xl font-bold mb-8 text-center">Frequently Asked Questions</h3>
           <div className="max-w-4xl mx-auto space-y-4">
@@ -111,7 +111,7 @@ const Footer = () => {
       </div>
 
       {/* Newsletter Section - Second with proper colors and spacing */}
-      <div className="bg-slate-900 py-16 border-t-2 border-slate-700">
+      <div className="bg-slate-900 py-24 border-t-4 border-slate-700">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto text-center">
             <h3 className="text-2xl font-bold mb-4">Stay Updated with Financial Insights</h3>
@@ -127,7 +127,7 @@ const Footer = () => {
               />
               <button
                 type="submit"
-                className="px-6 py-3 bg-slate-700 text-white font-semibold rounded-lg hover:bg-slate-600 transition-colors"
+                className="px-6 py-3 bg-gray-600 text-white font-semibold rounded-lg hover:bg-gray-500 transition-colors"
               >
                 {isSubscribed ? "✓ Subscribed!" : "Subscribe"}
               </button>
@@ -137,7 +137,7 @@ const Footer = () => {
       </div>
 
       {/* Main Footer Content - Third */}
-      <div className="container mx-auto px-4 py-16">
+      <div className="container mx-auto px-4 py-20">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {/* Company Info */}
           <div>
@@ -223,7 +223,7 @@ const Footer = () => {
         <div className="container mx-auto px-4">
           <div className="flex flex-col md:flex-row justify-between items-center text-gray-400 text-sm">
             <p>&copy; {currentYear} {companyInfo.name}. All rights reserved.</p>
-            <p>Built with ❤️ for smarter financial management</p>
+            <p>Smart financial management platform</p>
           </div>
         </div>
       </div>
