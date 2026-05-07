@@ -23,13 +23,7 @@ export function UserNav({
   const navigate = useNavigate()
   const { data: subscription } = useGetSubscriptionQuery()
 
-  // Debug subscription data
-  useEffect(() => {
-    console.log('UserNav - Subscription data:', subscription);
-    console.log('UserNav - Subscription status:', subscription?.data?.status);
-    console.log('UserNav - Subscription plan:', subscription?.data?.plan);
-  }, [subscription]);
-
+  
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
@@ -69,14 +63,18 @@ export function UserNav({
         <div className="absolute right-0 top-full mt-2 w-56 bg-gray-800 text-white border border-gray-700 rounded-md shadow-lg z-[9999]">
           <div className="px-3 py-2 border-b border-gray-700">
             <div className="font-semibold">{userName}</div>
-            <div className="text-[13px] text-gray-400 font-light flex items-center gap-1">
+            <div className="text-[13px] font-medium flex items-center gap-1">
               {subscription?.data?.status === 'active' ? (
                 <>
-                  <Crown className="w-3 h-3 text-yellow-500" />
-                  {subscription?.data?.plan === 'LIFETIME' ? 'Lifetime Plan' : 'Premium Plan'}
+                  <div className="p-1 bg-gradient-to-r from-yellow-400 to-amber-500 rounded-full">
+                    <Crown className="w-3 h-3 text-white" />
+                  </div>
+                  <span className="bg-gradient-to-r from-yellow-400 to-amber-500 bg-clip-text text-transparent font-semibold">
+                    {subscription?.data?.plan === 'LIFETIME' ? 'Lifetime Plan' : 'Premium Plan'}
+                  </span>
                 </>
               ) : (
-                'Free Trial (2 days left)'
+                <span className="text-gray-400">Free Trial (2 days left)</span>
               )}
             </div>
           </div>
