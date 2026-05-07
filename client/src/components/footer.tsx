@@ -82,7 +82,7 @@ const Footer = () => {
   return (
     <footer className="bg-gray-900 text-white">
       {/* FAQ Section - First */}
-      <div className="bg-gray-800 py-12">
+      <div className="bg-gray-800 py-16">
         <div className="container mx-auto px-4">
           <h3 className="text-2xl font-bold mb-8 text-center">Frequently Asked Questions</h3>
           <div className="max-w-4xl mx-auto space-y-4">
@@ -110,8 +110,8 @@ const Footer = () => {
         </div>
       </div>
 
-      {/* Newsletter Section - Second with better colors */}
-      <div className="bg-gray-850 py-12 border-y border-gray-700">
+      {/* Newsletter Section - Second with proper colors and spacing */}
+      <div className="bg-slate-900 py-16 border-t-2 border-slate-700">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto text-center">
             <h3 className="text-2xl font-bold mb-4">Stay Updated with Financial Insights</h3>
@@ -122,12 +122,12 @@ const Footer = () => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="Enter your email"
-                className="flex-1 px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="flex-1 px-4 py-3 bg-slate-800 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-500 focus:border-transparent"
                 required
               />
               <button
                 type="submit"
-                className="px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors"
+                className="px-6 py-3 bg-slate-700 text-white font-semibold rounded-lg hover:bg-slate-600 transition-colors"
               >
                 {isSubscribed ? "✓ Subscribed!" : "Subscribe"}
               </button>
@@ -137,7 +137,7 @@ const Footer = () => {
       </div>
 
       {/* Main Footer Content - Third */}
-      <div className="container mx-auto px-4 py-12">
+      <div className="container mx-auto px-4 py-16">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {/* Company Info */}
           <div>
