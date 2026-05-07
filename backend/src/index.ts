@@ -14,6 +14,8 @@ import transactionRoutes from "./routes/transaction.route";
 import { initializeCrons } from "./cron";
 import reportRoutes from "./routes/report.route";
 import analyticsRoutes from "./routes/analytics.route";
+import billingRoutes from "./routes/billing.route";
+import { requirePremium } from "./middlewares/premium.middleware";
 import { Env } from "./config/env.config";
 
 const app = express();
@@ -55,7 +57,8 @@ app.use(`${BASE_PATH}/auth`, authRoutes);
 app.use(`${BASE_PATH}/user`, passportAuthenticateJwt, userRoutes);
 app.use(`${BASE_PATH}/transaction`, passportAuthenticateJwt, transactionRoutes);
 app.use(`${BASE_PATH}/report`, passportAuthenticateJwt, reportRoutes);
-app.use(`${BASE_PATH}/analytics`, passportAuthenticateJwt, analyticsRoutes);
+app.use(`${BASE_PATH}/analytics`, passportAuthenticateJwt, requirePremium, analyticsRoutes);
+app.use(`${BASE_PATH}/billing`, billingRoutes);
 
 app.use(errorHandler);
 

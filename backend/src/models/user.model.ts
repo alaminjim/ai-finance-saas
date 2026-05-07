@@ -6,6 +6,8 @@ export interface UserDocument extends Document {
   email: string;
   password: string;
   profilePicture: string | null;
+  isPremium: boolean;
+  stripeCustomerId?: string;
   createdAt: Date;
   updatedAt: Date;
   comparePassword: (password: string) => Promise<boolean>;
@@ -29,6 +31,14 @@ const userSchema = new Schema<UserDocument>(
     profilePicture: {
       type: String,
       default: null,
+    },
+    isPremium: {
+      type: Boolean,
+      default: false,
+    },
+    stripeCustomerId: {
+      type: String,
+      sparse: true,
     },
     password: {
       type: String,
