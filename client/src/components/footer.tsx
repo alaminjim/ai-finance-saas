@@ -81,24 +81,53 @@ const Footer = () => {
 
   return (
     <footer className="bg-gray-900 text-white">
-      {/* Newsletter Section */}
-      <div className="bg-gradient-to-r from-blue-600 to-purple-600 py-12">
+      {/* FAQ Section - First */}
+      <div className="bg-gray-800 py-12">
+        <div className="container mx-auto px-4">
+          <h3 className="text-2xl font-bold mb-8 text-center">Frequently Asked Questions</h3>
+          <div className="max-w-4xl mx-auto space-y-4">
+            {faqs.map((faq, index) => (
+              <div key={index} className="bg-gray-700 rounded-lg overflow-hidden">
+                <button
+                  onClick={() => toggleFaq(index)}
+                  className="w-full px-6 py-4 text-left flex items-center justify-between hover:bg-gray-600 transition-colors"
+                >
+                  <span className="font-medium">{faq.question}</span>
+                  {expandedFaq === index ? (
+                    <ChevronUp className="w-5 h-5 flex-shrink-0" />
+                  ) : (
+                    <ChevronDown className="w-5 h-5 flex-shrink-0" />
+                  )}
+                </button>
+                {expandedFaq === index && (
+                  <div className="px-6 py-4 text-gray-300 border-t border-gray-600">
+                    {faq.answer}
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Newsletter Section - Second with better colors */}
+      <div className="bg-gray-850 py-12 border-y border-gray-700">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto text-center">
             <h3 className="text-2xl font-bold mb-4">Stay Updated with Financial Insights</h3>
-            <p className="text-blue-100 mb-6">Get weekly tips, updates, and exclusive offers delivered to your inbox</p>
+            <p className="text-gray-400 mb-6">Get weekly tips, updates, and exclusive offers delivered to your inbox</p>
             <form onSubmit={handleNewsletterSubmit} className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
               <input
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="Enter your email"
-                className="flex-1 px-4 py-3 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-white"
+                className="flex-1 px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 required
               />
               <button
                 type="submit"
-                className="px-6 py-3 bg-white text-blue-600 font-semibold rounded-lg hover:bg-gray-100 transition-colors"
+                className="px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors"
               >
                 {isSubscribed ? "✓ Subscribed!" : "Subscribe"}
               </button>
@@ -107,7 +136,7 @@ const Footer = () => {
         </div>
       </div>
 
-      {/* Main Footer Content */}
+      {/* Main Footer Content - Third */}
       <div className="container mx-auto px-4 py-12">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {/* Company Info */}
@@ -185,33 +214,6 @@ const Footer = () => {
             <p className="text-gray-400 text-sm">
               Connect with us for updates and financial tips
             </p>
-          </div>
-        </div>
-
-        {/* FAQ Section */}
-        <div className="mt-12 pt-8 border-t border-gray-800">
-          <h3 className="text-xl font-semibold mb-6 text-center">Frequently Asked Questions</h3>
-          <div className="max-w-3xl mx-auto space-y-4">
-            {faqs.map((faq, index) => (
-              <div key={index} className="bg-gray-800 rounded-lg overflow-hidden">
-                <button
-                  onClick={() => toggleFaq(index)}
-                  className="w-full px-6 py-4 text-left flex items-center justify-between hover:bg-gray-700 transition-colors"
-                >
-                  <span className="font-medium">{faq.question}</span>
-                  {expandedFaq === index ? (
-                    <ChevronUp className="w-5 h-5 flex-shrink-0" />
-                  ) : (
-                    <ChevronDown className="w-5 h-5 flex-shrink-0" />
-                  )}
-                </button>
-                {expandedFaq === index && (
-                  <div className="px-6 py-4 text-gray-400 border-t border-gray-700">
-                    {faq.answer}
-                  </div>
-                )}
-              </div>
-            ))}
           </div>
         </div>
       </div>
