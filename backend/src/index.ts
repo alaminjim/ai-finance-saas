@@ -46,6 +46,11 @@ app.get(
   })
 );
 
+// Test endpoint without authentication
+app.get(`${BASE_PATH}/user/test`, (req, res) => {
+  res.json({ message: "Backend is working!", timestamp: new Date() });
+});
+
 app.use(`${BASE_PATH}/auth`, authRoutes);
 app.use(`${BASE_PATH}/user`, passportAuthenticateJwt, userRoutes);
 app.use(`${BASE_PATH}/transaction`, passportAuthenticateJwt, transactionRoutes);
