@@ -11,7 +11,9 @@ const AppLayout = () => {
       <main className="flex-1 w-full max-w-full">
         <Outlet />
       </main>
-      <Footer />
+      <div className="mt-8">
+        <Footer />
+      </div>
     </div>
     <EditTransactionDrawer />
     </>

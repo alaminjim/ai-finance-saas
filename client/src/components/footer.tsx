@@ -82,7 +82,7 @@ const Footer = () => {
   return (
     <footer className="bg-gray-900 text-white">
       {/* FAQ Section - First */}
-      <div className="bg-gray-800 py-24">
+      <div className="bg-gray-800 py-32">
         <div className="container mx-auto px-4">
           <h3 className="text-2xl font-bold mb-8 text-center">Frequently Asked Questions</h3>
           <div className="max-w-4xl mx-auto space-y-4">
@@ -110,8 +110,8 @@ const Footer = () => {
         </div>
       </div>
 
-      {/* Newsletter Section - Second with proper colors and spacing */}
-      <div className="bg-slate-900 py-24 border-t-4 border-slate-700">
+      {/* Newsletter Section - Second with massive gap */}
+      <div className="bg-slate-900 py-32 border-t-8 border-slate-700">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto text-center">
             <h3 className="text-2xl font-bold mb-4">Stay Updated with Financial Insights</h3>
@@ -137,7 +137,7 @@ const Footer = () => {
       </div>
 
       {/* Main Footer Content - Third */}
-      <div className="container mx-auto px-4 py-20">
+      <div className="container mx-auto px-4 py-28">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {/* Company Info */}
           <div>
