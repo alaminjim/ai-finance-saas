@@ -1,4 +1,4 @@
-import { HttpException } from "../utils/httpException";
+import { HttpException } from "../utils/app-error";
 import { HTTPSTATUS } from "../config/http.config";
 import { Env } from "../config/env.config";
 import { OAuth2Client } from "google-auth-library";
