@@ -1,10 +1,13 @@
 import { useEffect } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
+import { useAppDispatch } from "@/app/hook";
+import { setCredentials } from "@/features/auth/authSlice";
 
 const GoogleCallback = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
     const code = searchParams.get('code');
@@ -53,15 +56,20 @@ const GoogleCallback = () => {
             toast.success("Google authentication successful!");
             console.log("Google auth result:", data);
             
-            // Store token and user data if needed
+            // Store authentication data in Redux for immediate login
             if (data.user) {
-              // You might want to store user data in Redux/localStorage here
-              console.log("User data:", data.user);
+              // Dispatch credentials to Redux store
+              dispatch(setCredentials(data));
             }
             
-            // Redirect to sign-in page after successful Google auth
+            // Redirect based on the original action
             setTimeout(() => {
-              navigate('/sign-in');
+              if (action === 'signin') {
+                navigate('/overview');
+              } else {
+                // For signup, redirect to sign-in page
+                navigate('/');
+              }
             }, 1000);
           } else {
             toast.error("Failed to authenticate with Google");
