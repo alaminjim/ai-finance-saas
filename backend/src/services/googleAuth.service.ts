@@ -6,7 +6,7 @@ import { OAuth2Client } from "google-auth-library";
 const oauth2Client = new OAuth2Client(
   Env.GOOGLE_CLIENT_ID,
   Env.GOOGLE_CLIENT_SECRET,
-  Env.FRONTEND_ORIGIN
+  `${Env.FRONTEND_ORIGIN}/auth/google/callback`
 );
 
 export const googleAuthService = {
