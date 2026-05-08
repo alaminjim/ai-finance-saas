@@ -42,6 +42,10 @@ const GoogleCallback = () => {
         .then(response => response.json())
         .then(data => {
           if (data.token && data.user) {
+            console.log('Google auth successful, preparing redirect...');
+            console.log('User data:', data.user);
+            console.log('Token received:', data.token);
+            
             // Clear session storage
             sessionStorage.removeItem('google_oauth_state');
             sessionStorage.removeItem('google_oauth_action');
@@ -53,11 +57,22 @@ const GoogleCallback = () => {
               expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(), // 24 hours
             }));
             
+            console.log('Redux credentials dispatched');
             toast.success("Google authentication successful!");
             
             // Redirect immediately after setting credentials
             setTimeout(() => {
-              navigate('/overview', { replace: true });
+              console.log('Attempting to navigate to /overview');
+              // Try both React Router and window.location
+              try {
+                navigate('/overview', { replace: true });
+                console.log('React Router navigation called');
+              } catch (error) {
+                console.log('React Router failed, using window.location');
+              }
+              // Fallback to force redirect
+              window.location.href = '/overview';
+              console.log('Window location redirect called');
             }, 300);
           } else {
             toast.error("Failed to authenticate with Google");
