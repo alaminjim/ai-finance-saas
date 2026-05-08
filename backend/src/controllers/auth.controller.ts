@@ -6,6 +6,7 @@ import { loginService, registerService } from "../services/auth.service";
 import { googleAuthService } from "../services/googleAuth.service";
 import { HttpException } from "../utils/app-error";
 import { signJwtToken } from "../utils/jwt";
+import { findOrCreateGoogleUser } from "../services/user.service";
 
 export const registerController = asyncHandler(
   async (req: Request, res: Response) => {
@@ -64,14 +65,22 @@ export const googleAuthCallbackController = asyncHandler(
       // Exchange authorization code for tokens and get user info
       const googleUser = await googleAuthService.exchangeCodeForTokens(code);
       
-      // Generate JWT token for Google user
+      // Find or create user in database
+      const dbUser = await findOrCreateGoogleUser({
+        email: googleUser.email,
+        name: googleUser.name,
+        picture: googleUser.picture || '',
+        googleId: googleUser.googleId,
+      });
+      
+      // Generate JWT token for Google user using MongoDB _id
       const { token, expiresAt } = signJwtToken({
-        userId: googleUser.googleId, // Use Google ID as userId
+        userId: (dbUser as any)._id.toString(), // Use MongoDB _id as userId
       });
       
       return res.status(HTTPSTATUS.OK).json({
         message: "Google authentication successful",
-        user: googleUser,
+        user: dbUser,
         accessToken: token,
         expiresAt: expiresAt ? new Date(expiresAt).toISOString() : undefined,
       });

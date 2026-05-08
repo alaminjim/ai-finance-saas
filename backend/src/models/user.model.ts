@@ -10,6 +10,7 @@ export interface UserDocument extends Document {
   stripeCustomerId?: string;
   trialStart?: Date;
   trialEnd?: Date;
+  googleId?: string;
   createdAt: Date;
   updatedAt: Date;
   comparePassword: (password: string) => Promise<boolean>;
@@ -51,10 +52,18 @@ const userSchema = new Schema<UserDocument>(
       type: Date,
       sparse: true,
     },
+    googleId: {
+      type: String,
+      sparse: true,
+      unique: true,
+    },
     password: {
       type: String,
       select: true,
-      required: true,
+      required: function(this: UserDocument) {
+        // Password is required unless user has googleId (Google auth user)
+        return !this.googleId;
+      },
     },
   },
   {
