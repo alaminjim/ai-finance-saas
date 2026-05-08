@@ -48,7 +48,6 @@ const SignUpForm = () => {
         navigate(AUTH_ROUTES.SIGN_IN);
       })
       .catch((error) => {
-        console.log(error);
         toast.error(error.data?.message || "Failed to sign up");
       });
   };
@@ -74,7 +73,6 @@ const SignUpForm = () => {
       // Redirect to Google OAuth directly (no popup)
       window.location.href = authUrl;
     } catch (error) {
-      console.error("Google Sign-Up error:", error);
       setIsGoogleLoading(false);
       toast.error("Failed to initialize Google Sign-Up");
     }

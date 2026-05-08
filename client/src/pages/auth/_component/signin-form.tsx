@@ -1,6 +1,7 @@
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { AUTH_ROUTES, PROTECTED_ROUTES } from "@/routes/common/routePath";
 import { z } from "zod";
@@ -16,7 +17,7 @@ import {
 } from "@/components/ui/form";
 import { toast } from "sonner";
 import { Loader } from "lucide-react";
-import { useLoginMutation, useGoogleAuthUrlQuery, useGoogleAuthCallbackMutation } from "@/features/auth/authAPI";
+import { useLoginMutation } from "@/features/auth/authAPI";
 import { useAppDispatch } from "@/app/hook";
 import { setCredentials } from "@/features/auth/authSlice";
 import GoogleAuthButton from "@/components/ui/google-auth-button";
@@ -35,7 +36,7 @@ const SignInForm = ({
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const [login, { isLoading }] = useLoginMutation();
-  const [googleAuthCallback, { isLoading: isGoogleLoading }] = useGoogleAuthCallbackMutation();
+  const [isGoogleLoading, setIsGoogleLoading] = useState(false);
 
   const form = useForm<FormValues>({
     resolver: zodResolver(schema),
@@ -52,12 +53,12 @@ const SignInForm = ({
         }, 1000);
       })
       .catch((error) => {
-        console.log(error);
         toast.error(error.data?.message || "Failed to login");
       });
   };
 
   const handleGoogleSignIn = async () => {
+    setIsGoogleLoading(true);
     try {
       // Use redirect-based OAuth flow instead of popup to avoid Cross-Origin-Opener-Policy issues
       const state = Math.random().toString(36).substring(7);
@@ -77,7 +78,7 @@ const SignInForm = ({
       // Redirect to Google OAuth directly (no popup)
       window.location.href = authUrl;
     } catch (error) {
-      console.error("Google Sign-In error:", error);
+      setIsGoogleLoading(false);
       toast.error("Failed to initialize Google Sign-In");
     }
   };

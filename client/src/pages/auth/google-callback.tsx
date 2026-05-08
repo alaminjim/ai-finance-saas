@@ -14,30 +14,23 @@ const GoogleCallback = () => {
     const error = searchParams.get('error');
     const state = searchParams.get('state');
     
-    // Debug logging
-    console.log('Google Callback - URL params:', { code, error, state });
-    console.log('Full URL:', window.location.href);
-
+    
     // Verify state to prevent CSRF attacks
     const storedState = sessionStorage.getItem('google_oauth_state');
-    const action = sessionStorage.getItem('google_oauth_action');
     
     if (state !== storedState) {
-      console.error('State mismatch - possible CSRF attack');
       navigate('/sign-up');
       return;
     }
 
     if (error) {
       // Handle OAuth error
-      console.log('OAuth error:', error);
       toast.error("Google authentication cancelled or failed");
       navigate('/sign-up');
       return;
     }
 
     if (code) {
-      console.log('Authorization code received:', code);
       // Exchange authorization code for tokens
       fetch(`${import.meta.env.VITE_API_URL}/auth/google/callback`, {
         method: 'POST',
@@ -54,7 +47,6 @@ const GoogleCallback = () => {
             sessionStorage.removeItem('google_oauth_action');
             
             toast.success("Google authentication successful!");
-            console.log("Google auth result:", data);
             
             // Store authentication data in Redux for immediate login
             if (data.user) {
@@ -62,22 +54,16 @@ const GoogleCallback = () => {
               dispatch(setCredentials(data));
             }
             
-            // Redirect based on the original action
+            // Always redirect to home page after successful Google authentication
             setTimeout(() => {
-              if (action === 'signin') {
-                navigate('/overview');
-              } else {
-                // For signup, redirect to sign-in page
-                navigate('/');
-              }
+              navigate('/');
             }, 1000);
           } else {
             toast.error("Failed to authenticate with Google");
             navigate('/sign-up');
           }
         })
-        .catch(error => {
-          console.error('Token exchange error:', error);
+        .catch(() => {
           toast.error("Failed to authenticate with Google");
           navigate('/sign-up');
         });
