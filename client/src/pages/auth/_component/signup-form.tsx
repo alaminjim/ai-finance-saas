@@ -57,7 +57,7 @@ const SignUpForm = () => {
       // Use Google's OAuth 2.0 flow
       const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?` +
         `client_id=${import.meta.env.VITE_GOOGLE_CLIENT_ID}&` +
-        `redirect_uri=${encodeURIComponent(window.location.origin)}&` +
+        `redirect_uri=${encodeURIComponent(`${window.location.origin}/auth/google/callback`)}&` +
         `response_type=code&` +
         `scope=openid email profile&` +
         `state=${Math.random().toString(36).substring(7)}`;
