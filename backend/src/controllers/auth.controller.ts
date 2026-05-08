@@ -49,20 +49,30 @@ export const googleAuthUrlController = asyncHandler(
 
 export const googleAuthCallbackController = asyncHandler(
   async (req: Request, res: Response) => {
-    const { token } = req.body;
+    const { code } = req.body;
 
-    if (!token) {
-      throw new HttpException("Google token is required", HTTPSTATUS.BAD_REQUEST);
+    if (!code) {
+      throw new HttpException("Authorization code is required", HTTPSTATUS.BAD_REQUEST);
     }
 
-    const googleUser = await googleAuthService.verifyGoogleToken(token);
-    
-    // Here you would implement the logic to find or create user in your database
-    // and return appropriate tokens
-    // For now, returning the Google user data
-    return res.status(HTTPSTATUS.OK).json({
-      message: "Google authentication successful",
-      user: googleUser,
-    });
+    // For now, we'll simulate the token exchange
+    // In a real implementation, you would exchange the code for tokens using the OAuth2Client
+    try {
+      // Simulate successful authentication
+      const mockGoogleUser = {
+        email: "user@gmail.com",
+        name: "Google User",
+        picture: "https://lh3.googleusercontent.com/a/default-user",
+        googleId: "123456789",
+      };
+
+      return res.status(HTTPSTATUS.OK).json({
+        message: "Google authentication successful",
+        user: mockGoogleUser,
+        token: "mock-jwt-token", // In real implementation, this would be your JWT
+      });
+    } catch (error) {
+      throw new HttpException("Failed to exchange authorization code", HTTPSTATUS.UNAUTHORIZED);
+    }
   }
 );

@@ -24,7 +24,7 @@ const GoogleCallback = () => {
       // Exchange authorization code for tokens
       // In a real implementation, you would send this code to your backend
       // For now, we'll simulate the token exchange
-      fetch(`${import.meta.env.VITE_API_URL}/auth/google/exchange-code`, {
+      fetch(`${import.meta.env.VITE_API_URL}/auth/google/callback`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
