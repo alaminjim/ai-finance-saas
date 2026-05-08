@@ -55,7 +55,7 @@ const GoogleCallback = () => {
             dispatch(setCredentials({
               user: data.user,
               accessToken: data.accessToken,
-              expiresAt: data.expiresAt,
+              expiresAt: data.expiresAt ? new Date(data.expiresAt).getTime() : null,
             }));
             
             console.log('Redux credentials dispatched');

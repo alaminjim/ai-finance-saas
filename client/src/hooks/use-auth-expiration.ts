@@ -30,7 +30,9 @@ const useAuthExpiration = () => {
 
     if (accessToken && expiresAt) {
         const currentTime = Date.now();
-        const timeUntilExpiration = expiresAt - currentTime;
+        // Convert expiresAt to timestamp if it's an ISO string
+        const expirationTime = typeof expiresAt === 'string' ? new Date(expiresAt).getTime() : expiresAt;
+        const timeUntilExpiration = expirationTime - currentTime;
       if (timeUntilExpiration <= 0) {
         // Token is already expired
         handleTokenRefresh()

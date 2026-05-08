@@ -46,7 +46,10 @@ const SignInForm = ({
     login(values)
       .unwrap()
       .then((data) => {
-        dispatch(setCredentials(data));
+        dispatch(setCredentials({
+          ...data,
+          expiresAt: data.expiresAt ? new Date(data.expiresAt).getTime() : null,
+        }));
         toast.success("Login successful");
         setTimeout(() => {
           navigate(PROTECTED_ROUTES.OVERVIEW);
