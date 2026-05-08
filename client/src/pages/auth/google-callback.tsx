@@ -1,6 +1,5 @@
 import { useEffect } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
-import { toast } from "sonner";
 
 const GoogleCallback = () => {
   const [searchParams] = useSearchParams();
@@ -14,14 +13,35 @@ const GoogleCallback = () => {
     console.log('Google Callback - URL params:', { code, error });
     console.log('Full URL:', window.location.href);
 
+    const closeWindow = () => {
+      // Try to close window, but handle Cross-Origin-Opener-Policy restriction
+      try {
+        window.close();
+      } catch (error) {
+        console.log('Window close blocked by Cross-Origin-Opener-Policy');
+        // Fallback: redirect to sign-in page after a delay
+        setTimeout(() => {
+          window.location.href = '/sign-up';
+        }, 2000);
+      }
+    };
+
+    const sendMessage = (message: any) => {
+      try {
+        window.opener?.postMessage(message, window.location.origin);
+      } catch (error) {
+        console.log('PostMessage blocked, will redirect instead');
+      }
+    };
+
     if (error) {
       // Handle OAuth error
       console.log('OAuth error:', error);
-      window.opener?.postMessage({
+      sendMessage({
         type: 'GOOGLE_AUTH_ERROR',
         error: error
-      }, window.location.origin);
-      window.close();
+      });
+      closeWindow();
       return;
     }
 
@@ -38,34 +58,34 @@ const GoogleCallback = () => {
         .then(response => response.json())
         .then(data => {
           if (data.token) {
-            window.opener?.postMessage({
+            sendMessage({
               type: 'GOOGLE_AUTH_SUCCESS',
               token: data.token
-            }, window.location.origin);
-            window.close();
+            });
+            closeWindow();
           } else {
-            window.opener?.postMessage({
+            sendMessage({
               type: 'GOOGLE_AUTH_ERROR',
               error: 'Failed to exchange code for token'
-            }, window.location.origin);
-            window.close();
+            });
+            closeWindow();
           }
         })
         .catch(error => {
           console.error('Token exchange error:', error);
-          window.opener?.postMessage({
+          sendMessage({
             type: 'GOOGLE_AUTH_ERROR',
             error: 'Failed to exchange code for token'
-          }, window.location.origin);
-          window.close();
+          });
+          closeWindow();
         });
     } else {
       // No code or error parameter
-      window.opener?.postMessage({
+      sendMessage({
         type: 'GOOGLE_AUTH_ERROR',
         error: 'No authorization code received'
-      }, window.location.origin);
-      window.close();
+      });
+      closeWindow();
     }
   }, [searchParams, navigate]);
 
@@ -74,6 +94,7 @@ const GoogleCallback = () => {
       <div className="text-center">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
         <p className="text-muted-foreground">Completing Google authentication...</p>
+        <p className="text-sm text-muted-foreground mt-2">This window will close automatically</p>
       </div>
     </div>
   );

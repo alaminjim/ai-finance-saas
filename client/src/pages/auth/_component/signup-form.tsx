@@ -72,7 +72,12 @@ const SignUpForm = () => {
         if (event.origin !== window.location.origin) return;
         
         if (event.data.type === 'GOOGLE_AUTH_SUCCESS') {
-          popup?.close();
+          // Try to close popup (might be blocked by Cross-Origin-Opener-Policy)
+          try {
+            popup?.close();
+          } catch (error) {
+            console.log('Popup close blocked by Cross-Origin-Opener-Policy');
+          }
           window.removeEventListener('message', messageListener);
           setIsGoogleLoading(false);
           
@@ -86,7 +91,12 @@ const SignUpForm = () => {
             navigate(AUTH_ROUTES.SIGN_IN);
           }, 1000);
         } else if (event.data.type === 'GOOGLE_AUTH_ERROR') {
-          popup?.close();
+          // Try to close popup (might be blocked by Cross-Origin-Opener-Policy)
+          try {
+            popup?.close();
+          } catch (error) {
+            console.log('Popup close blocked by Cross-Origin-Opener-Policy');
+          }
           window.removeEventListener('message', messageListener);
           setIsGoogleLoading(false);
           toast.error("Google authentication cancelled or failed");
