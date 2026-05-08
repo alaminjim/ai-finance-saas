@@ -41,10 +41,11 @@ const GoogleCallback = () => {
       })
         .then(response => response.json())
         .then(data => {
-          if (data.token && data.user) {
+          if (data.accessToken && data.user) {
             console.log('Google auth successful, preparing redirect...');
             console.log('User data:', data.user);
-            console.log('Token received:', data.token);
+            console.log('Token received:', data.accessToken);
+            console.log('Expires at:', data.expiresAt);
             
             // Clear session storage
             sessionStorage.removeItem('google_oauth_state');
@@ -53,8 +54,8 @@ const GoogleCallback = () => {
             // Store authentication data in Redux for immediate login
             dispatch(setCredentials({
               user: data.user,
-              accessToken: data.token,
-              expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(), // 24 hours
+              accessToken: data.accessToken,
+              expiresAt: data.expiresAt,
             }));
             
             console.log('Redux credentials dispatched');

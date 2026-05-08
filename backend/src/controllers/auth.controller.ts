@@ -5,6 +5,7 @@ import { loginSchema, registerSchema } from "../validators/auth.validator";
 import { loginService, registerService } from "../services/auth.service";
 import { googleAuthService } from "../services/googleAuth.service";
 import { HttpException } from "../utils/app-error";
+import { signJwtToken } from "../utils/jwt";
 
 export const registerController = asyncHandler(
   async (req: Request, res: Response) => {
@@ -63,12 +64,16 @@ export const googleAuthCallbackController = asyncHandler(
       // Exchange authorization code for tokens and get user info
       const googleUser = await googleAuthService.exchangeCodeForTokens(code);
       
-      // TODO: Implement user creation/login logic here
-      // For now, return the Google user data
+      // Generate JWT token for Google user
+      const { token, expiresAt } = signJwtToken({
+        userId: googleUser.googleId, // Use Google ID as userId
+      });
+      
       return res.status(HTTPSTATUS.OK).json({
         message: "Google authentication successful",
         user: googleUser,
-        token: "mock-jwt-token", // In real implementation, this would be your JWT
+        accessToken: token,
+        expiresAt: expiresAt ? new Date(expiresAt).toISOString() : undefined,
       });
     } catch (error) {
       console.error('Code exchange error:', error);
