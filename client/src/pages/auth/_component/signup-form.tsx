@@ -2,6 +2,7 @@ import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { Loader } from "lucide-react";
 import { z } from "zod";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Link, useNavigate } from "react-router-dom";
@@ -15,7 +16,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { useRegisterMutation, useGoogleAuthCallbackMutation } from "@/features/auth/authAPI";
+import { useRegisterMutation } from "@/features/auth/authAPI";
 import { useAppDispatch } from "@/app/hook";
 import { setCredentials } from "@/features/auth/authSlice";
 import GoogleAuthButton from "@/components/ui/google-auth-button";
@@ -32,7 +33,7 @@ const SignUpForm = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const [register, { isLoading }] = useRegisterMutation();
-  const [googleAuthCallback, { isLoading: isGoogleLoading }] = useGoogleAuthCallbackMutation();
+  const [isGoogleLoading, setIsGoogleLoading] = useState(false);
 
   const form = useForm<FormValues>({
     resolver: zodResolver(schema),
@@ -53,8 +54,9 @@ const SignUpForm = () => {
   };
 
   const handleGoogleSignUp = async () => {
+    setIsGoogleLoading(true);
     try {
-      // Use Google's OAuth 2.0 flow
+      // Use Google's OAuth 2.0 authorization code flow
       const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?` +
         `client_id=${import.meta.env.VITE_GOOGLE_CLIENT_ID}&` +
         `redirect_uri=${encodeURIComponent(`${window.location.origin}/auth/google/callback`)}&` +
@@ -72,25 +74,21 @@ const SignUpForm = () => {
         if (event.data.type === 'GOOGLE_AUTH_SUCCESS') {
           popup?.close();
           window.removeEventListener('message', messageListener);
+          setIsGoogleLoading(false);
           
-          // Send token to backend
-          googleAuthCallback({ token: event.data.token })
-            .unwrap()
-            .then((result) => {
-              toast.success("Google sign-up successful");
-              console.log("Google auth result:", result);
-              // Handle successful authentication
-              setTimeout(() => {
-                navigate(AUTH_ROUTES.SIGN_IN);
-              }, 1000);
-            })
-            .catch((error) => {
-              console.error("Google auth error:", error);
-              toast.error("Failed to authenticate with Google");
-            });
+          // Store the received token and navigate to sign in
+          // The callback page already handled the backend communication
+          toast.success("Google sign-up successful");
+          console.log("Google auth token received:", event.data.token);
+          
+          // Navigate to sign in page after successful Google auth
+          setTimeout(() => {
+            navigate(AUTH_ROUTES.SIGN_IN);
+          }, 1000);
         } else if (event.data.type === 'GOOGLE_AUTH_ERROR') {
           popup?.close();
           window.removeEventListener('message', messageListener);
+          setIsGoogleLoading(false);
           toast.error("Google authentication cancelled or failed");
         }
       };
@@ -98,6 +96,7 @@ const SignUpForm = () => {
       window.addEventListener('message', messageListener);
     } catch (error) {
       console.error("Google Sign-Up error:", error);
+      setIsGoogleLoading(false);
       toast.error("Failed to initialize Google Sign-Up");
     }
   };
