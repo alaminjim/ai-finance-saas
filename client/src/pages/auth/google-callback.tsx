@@ -54,9 +54,9 @@ const GoogleCallback = () => {
               dispatch(setCredentials(data));
             }
             
-            // Always redirect to home page after successful Google authentication
+            // Always redirect to overview (home page) after successful Google authentication
             setTimeout(() => {
-              navigate('/');
+              navigate('/overview');
             }, 1000);
           } else {
             toast.error("Failed to authenticate with Google");
