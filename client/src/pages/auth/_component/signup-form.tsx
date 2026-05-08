@@ -56,54 +56,23 @@ const SignUpForm = () => {
   const handleGoogleSignUp = async () => {
     setIsGoogleLoading(true);
     try {
-      // Use Google's OAuth 2.0 authorization code flow
+      // Use redirect-based OAuth flow instead of popup to avoid Cross-Origin-Opener-Policy issues
+      const state = Math.random().toString(36).substring(7);
       const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?` +
         `client_id=${import.meta.env.VITE_GOOGLE_CLIENT_ID}&` +
         `redirect_uri=${encodeURIComponent(`${window.location.origin}/auth/google/callback`)}&` +
         `response_type=code&` +
         `scope=openid email profile&` +
-        `state=${Math.random().toString(36).substring(7)}`;
+        `state=${state}&` +
+        `access_type=offline&` +
+        `prompt=consent`;
       
-      // Open Google OAuth in popup
-      const popup = window.open(authUrl, 'google-auth', 'width=500,height=600');
+      // Store the state in sessionStorage to verify on callback
+      sessionStorage.setItem('google_oauth_state', state);
+      sessionStorage.setItem('google_oauth_action', 'signup');
       
-      // Listen for message from popup
-      const messageListener = (event: MessageEvent) => {
-        if (event.origin !== window.location.origin) return;
-        
-        if (event.data.type === 'GOOGLE_AUTH_SUCCESS') {
-          // Try to close popup (might be blocked by Cross-Origin-Opener-Policy)
-          try {
-            popup?.close();
-          } catch (error) {
-            console.log('Popup close blocked by Cross-Origin-Opener-Policy');
-          }
-          window.removeEventListener('message', messageListener);
-          setIsGoogleLoading(false);
-          
-          // Store the received token and navigate to sign in
-          // The callback page already handled the backend communication
-          toast.success("Google sign-up successful");
-          console.log("Google auth token received:", event.data.token);
-          
-          // Navigate to sign in page after successful Google auth
-          setTimeout(() => {
-            navigate(AUTH_ROUTES.SIGN_IN);
-          }, 1000);
-        } else if (event.data.type === 'GOOGLE_AUTH_ERROR') {
-          // Try to close popup (might be blocked by Cross-Origin-Opener-Policy)
-          try {
-            popup?.close();
-          } catch (error) {
-            console.log('Popup close blocked by Cross-Origin-Opener-Policy');
-          }
-          window.removeEventListener('message', messageListener);
-          setIsGoogleLoading(false);
-          toast.error("Google authentication cancelled or failed");
-        }
-      };
-      
-      window.addEventListener('message', messageListener);
+      // Redirect to Google OAuth directly (no popup)
+      window.location.href = authUrl;
     } catch (error) {
       console.error("Google Sign-Up error:", error);
       setIsGoogleLoading(false);

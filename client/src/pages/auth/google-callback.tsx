@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 
 const GoogleCallback = () => {
   const [searchParams] = useSearchParams();
@@ -8,40 +9,27 @@ const GoogleCallback = () => {
   useEffect(() => {
     const code = searchParams.get('code');
     const error = searchParams.get('error');
+    const state = searchParams.get('state');
     
     // Debug logging
-    console.log('Google Callback - URL params:', { code, error });
+    console.log('Google Callback - URL params:', { code, error, state });
     console.log('Full URL:', window.location.href);
 
-    const closeWindow = () => {
-      // Try to close window, but handle Cross-Origin-Opener-Policy restriction
-      try {
-        window.close();
-      } catch (error) {
-        console.log('Window close blocked by Cross-Origin-Opener-Policy');
-        // Fallback: redirect to sign-in page after a delay
-        setTimeout(() => {
-          window.location.href = '/sign-up';
-        }, 2000);
-      }
-    };
-
-    const sendMessage = (message: any) => {
-      try {
-        window.opener?.postMessage(message, window.location.origin);
-      } catch (error) {
-        console.log('PostMessage blocked, will redirect instead');
-      }
-    };
+    // Verify state to prevent CSRF attacks
+    const storedState = sessionStorage.getItem('google_oauth_state');
+    const action = sessionStorage.getItem('google_oauth_action');
+    
+    if (state !== storedState) {
+      console.error('State mismatch - possible CSRF attack');
+      navigate('/sign-up');
+      return;
+    }
 
     if (error) {
       // Handle OAuth error
       console.log('OAuth error:', error);
-      sendMessage({
-        type: 'GOOGLE_AUTH_ERROR',
-        error: error
-      });
-      closeWindow();
+      toast.error("Google authentication cancelled or failed");
+      navigate('/sign-up');
       return;
     }
 
@@ -58,34 +46,37 @@ const GoogleCallback = () => {
         .then(response => response.json())
         .then(data => {
           if (data.token) {
-            sendMessage({
-              type: 'GOOGLE_AUTH_SUCCESS',
-              token: data.token
-            });
-            closeWindow();
+            // Clear session storage
+            sessionStorage.removeItem('google_oauth_state');
+            sessionStorage.removeItem('google_oauth_action');
+            
+            toast.success("Google authentication successful!");
+            console.log("Google auth result:", data);
+            
+            // Store token and user data if needed
+            if (data.user) {
+              // You might want to store user data in Redux/localStorage here
+              console.log("User data:", data.user);
+            }
+            
+            // Redirect to sign-in page after successful Google auth
+            setTimeout(() => {
+              navigate('/sign-in');
+            }, 1000);
           } else {
-            sendMessage({
-              type: 'GOOGLE_AUTH_ERROR',
-              error: 'Failed to exchange code for token'
-            });
-            closeWindow();
+            toast.error("Failed to authenticate with Google");
+            navigate('/sign-up');
           }
         })
         .catch(error => {
           console.error('Token exchange error:', error);
-          sendMessage({
-            type: 'GOOGLE_AUTH_ERROR',
-            error: 'Failed to exchange code for token'
-          });
-          closeWindow();
+          toast.error("Failed to authenticate with Google");
+          navigate('/sign-up');
         });
     } else {
       // No code or error parameter
-      sendMessage({
-        type: 'GOOGLE_AUTH_ERROR',
-        error: 'No authorization code received'
-      });
-      closeWindow();
+      toast.error("No authorization code received");
+      navigate('/sign-up');
     }
   }, [searchParams, navigate]);
 
@@ -94,7 +85,7 @@ const GoogleCallback = () => {
       <div className="text-center">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
         <p className="text-muted-foreground">Completing Google authentication...</p>
-        <p className="text-sm text-muted-foreground mt-2">This window will close automatically</p>
+        <p className="text-sm text-muted-foreground mt-2">You will be redirected automatically</p>
       </div>
     </div>
   );
