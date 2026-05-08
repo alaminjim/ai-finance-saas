@@ -9,9 +9,14 @@ const GoogleCallback = () => {
   useEffect(() => {
     const code = searchParams.get('code');
     const error = searchParams.get('error');
+    
+    // Debug logging
+    console.log('Google Callback - URL params:', { code, error });
+    console.log('Full URL:', window.location.href);
 
     if (error) {
       // Handle OAuth error
+      console.log('OAuth error:', error);
       window.opener?.postMessage({
         type: 'GOOGLE_AUTH_ERROR',
         error: error
@@ -21,9 +26,8 @@ const GoogleCallback = () => {
     }
 
     if (code) {
+      console.log('Authorization code received:', code);
       // Exchange authorization code for tokens
-      // In a real implementation, you would send this code to your backend
-      // For now, we'll simulate the token exchange
       fetch(`${import.meta.env.VITE_API_URL}/auth/google/callback`, {
         method: 'POST',
         headers: {
