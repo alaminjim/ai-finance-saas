@@ -41,23 +41,24 @@ const GoogleCallback = () => {
       })
         .then(response => response.json())
         .then(data => {
-          if (data.token) {
+          if (data.token && data.user) {
             // Clear session storage
             sessionStorage.removeItem('google_oauth_state');
             sessionStorage.removeItem('google_oauth_action');
             
+            // Store authentication data in Redux for immediate login
+            dispatch(setCredentials({
+              user: data.user,
+              accessToken: data.token,
+              expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(), // 24 hours
+            }));
+            
             toast.success("Google authentication successful!");
             
-            // Store authentication data in Redux for immediate login
-            if (data.user) {
-              // Dispatch credentials to Redux store
-              dispatch(setCredentials(data));
-            }
-            
-            // Always redirect to overview (home page) after successful Google authentication
+            // Redirect immediately after setting credentials
             setTimeout(() => {
-              navigate('/overview');
-            }, 1000);
+              navigate('/overview', { replace: true });
+            }, 300);
           } else {
             toast.error("Failed to authenticate with Google");
             navigate('/sign-up');
