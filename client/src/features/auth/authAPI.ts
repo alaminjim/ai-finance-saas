@@ -30,6 +30,19 @@ export const authApi = apiClient.injectEndpoints({
         method: "POST",
       }),
     }),
+    googleAuthUrl: builder.query({
+      query: () => ({
+        url: "/auth/google/url",
+        method: "GET",
+      }),
+    }),
+    googleAuthCallback: builder.mutation({
+      query: (token) => ({
+        url: "/auth/google/callback",
+        method: "POST",
+        body: { token },
+      }),
+    }),
   }),
 });
 
@@ -38,4 +51,6 @@ export const {
   useRegisterMutation,
   useRefreshMutation,
   useLogoutMutation,
+  useGoogleAuthUrlQuery,
+  useGoogleAuthCallbackMutation,
 } = authApi;

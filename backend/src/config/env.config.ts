@@ -26,6 +26,10 @@ const envConfig = () => ({
   STRIPE_PUBLISHABLE_KEY: getEnv("STRIPE_PUBLISHABLE_KEY"),
 
   FRONTEND_ORIGIN: getEnv("FRONTEND_ORIGIN", "localhost"),
+
+  // Google OAuth
+  GOOGLE_CLIENT_ID: getEnv("GOOGLE_CLIENT_ID"),
+  GOOGLE_CLIENT_SECRET: getEnv("GOOGLE_CLIENT_SECRET"),
 });
 
 export const Env = envConfig();
