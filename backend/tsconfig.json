@@ -5,9 +5,9 @@
 
     /* Modules */
     "module": "ESNext",
-    "moduleResolution": "node",
+    "moduleResolution": "Node",
+    "ignoreDeprecations": "5.0",
     "rootDir": "./src",
-    "types": ["node", "express", "mongoose", "multer", "passport"],
 
     /* Emit */
     "outDir": "./dist",
