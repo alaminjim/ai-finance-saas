@@ -2,7 +2,7 @@ import cron from "node-cron";
 import { processRecurringTransactions } from "./jobs/transaction.job";
 import { processReportJob } from "./jobs/report.job";
 
-const scheduleJob = (name: string, time: string, job: Function) => {
+const scheduleJob = (name: string, time: string, job: () => Promise<any> | void) => {
   console.log(`Scheduling ${name} at ${time}`);
 
   return cron.schedule(

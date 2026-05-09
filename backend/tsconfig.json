@@ -7,8 +7,6 @@
     "module": "Node16",
     "moduleResolution": "node16",
     "rootDir": "./src",
-    "typeRoots": ["./node_modules/@types"],
-    "types": ["node", "express", "passport", "multer"],
 
     /* Emit */
     "outDir": "./dist",

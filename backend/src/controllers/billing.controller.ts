@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import { asyncHandler } from "../middlewares/asyncHandler.middlerware";
 import { HTTPSTATUS } from "../config/http.config";
 import { BillingService } from "../services/billing.service";
-import { SubscriptionPlan } from "../config/stripe.config";
+import { stripe, SubscriptionPlan } from "../config/stripe.config";
 
 export const createPaymentSessionController = asyncHandler(
   async (req: Request, res: Response) => {
@@ -97,11 +97,10 @@ export const paymentSuccessController = asyncHandler(
     }
 
     try {
-      const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
       const session = await stripe.checkout.sessions.retrieve(session_id as string);
 
       if (session.payment_status === 'paid') {
-        await BillingService.handleSuccessfulPayment(session);
+        await BillingService.handleSuccessfulPayment(session as any);
         
         return res.status(HTTPSTATUS.OK).json({
           message: "Payment successful, subscription activated",

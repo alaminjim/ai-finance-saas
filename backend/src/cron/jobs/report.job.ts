@@ -38,7 +38,7 @@ export const processReportJob = async () => {
       const session = await mongoose.startSession();
 
       try {
-        const report = await generateReportService(user.id, from, to);
+        const report = await generateReportService(user._id as string, from, to);
 
         let emailSent = false;
         if (report) {
@@ -59,7 +59,7 @@ export const processReportJob = async () => {
             });
             emailSent = true;
           } catch (error) {
-            console.log(`Email failed for ${user.id}`);
+            console.log(`Email failed for ${user._id}`);
           }
         }
 
@@ -72,7 +72,7 @@ export const processReportJob = async () => {
               bulkReports.push({
                 insertOne: {
                   document: {
-                    userId: user.id,
+                    userId: user._id,
                     sentDate: now,
                     period: report.period,
                     status: ReportStatusEnum.SENT,
@@ -98,7 +98,7 @@ export const processReportJob = async () => {
               bulkReports.push({
                 insertOne: {
                   document: {
-                    userId: user.id,
+                    userId: user._id,
                     sentDate: now,
                     period:
                       report?.period ||
