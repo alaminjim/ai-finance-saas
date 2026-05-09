@@ -119,6 +119,11 @@ const transactionSchema = new Schema<TransactionDocument>(
   }
 );
 
+// Optimize performance with indexes
+transactionSchema.index({ userId: 1, date: -1 });
+transactionSchema.index({ userId: 1, type: 1 });
+transactionSchema.index({ userId: 1, isRecurring: 1 });
+
 const TransactionModel = mongoose.model<TransactionDocument>(
   "Transaction",
   transactionSchema

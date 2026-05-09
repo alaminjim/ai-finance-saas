@@ -152,6 +152,19 @@ const SignInForm = ({
           >
             Continue with Google
           </GoogleAuthButton>
+
+          <Button
+            type="button"
+            variant="outline"
+            className="w-full border-green-500/50 text-green-600 hover:bg-green-50 dark:hover:bg-green-950/20"
+            onClick={() => {
+              form.setValue("email", "user123@gmail.com");
+              form.setValue("password", "12345678");
+              toast.success("Demo credentials loaded!");
+            }}
+          >
+            Login with Demo Account
+          </Button>
         </div>
         <div className="text-center text-sm">
           Don&apos;t have an account?{" "}

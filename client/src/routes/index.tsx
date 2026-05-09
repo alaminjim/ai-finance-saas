@@ -1,3 +1,4 @@
+import React from "react";
 import {
   BrowserRouter,
   Routes,
@@ -61,48 +62,56 @@ function AppRoutes() {
 
   return (
     <BrowserRouter>
-      <Routes>
-        {/* Public / Authentication Routes */}
-        <Route element={<AuthRoute />}>
-          <Route element={<BaseLayout />}>
-            {authenticationRoutePaths.map((route) => (
-              <Route
-                key={route.path}
-                path={route.path}
-                element={route.element}
-              />
-            ))}
+      <React.Suspense
+        fallback={
+          <div className="min-h-screen flex items-center justify-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-green-500"></div>
+          </div>
+        }
+      >
+        <Routes>
+          {/* Public / Authentication Routes */}
+          <Route element={<AuthRoute />}>
+            <Route element={<BaseLayout />}>
+              {authenticationRoutePaths.map((route) => (
+                <Route
+                  key={route.path}
+                  path={route.path}
+                  element={route.element}
+                />
+              ))}
+            </Route>
           </Route>
-        </Route>
 
-        {/* Protected Routes */}
-        <Route element={<ProtectedRoute />}>
-          <Route element={<AppLayout />}>
-            {protectedRoutePaths.map((route) => (
-              <Route key={route.path} path={route.path} element={route.element}>
-                {route.children?.map((child) => (
-                  <Route
-                    key={child.path || "index"}
-                    index={child.index}
-                    path={child.path}
-                    element={child.element}
-                  />
-                ))}
-              </Route>
-            ))}
+          {/* Protected Routes */}
+          <Route element={<ProtectedRoute />}>
+            <Route element={<AppLayout />}>
+              {protectedRoutePaths.map((route) => (
+                <Route key={route.path} path={route.path} element={route.element}>
+                  {route.children?.map((child) => (
+                    <Route
+                      key={child.path || "index"}
+                      index={child.index}
+                      path={child.path}
+                      element={child.element}
+                    />
+                  ))}
+                </Route>
+              ))}
+            </Route>
           </Route>
-        </Route>
 
-        {/* Catch-all 404 */}
-        <Route
-          path="*"
-          element={
-            <div className="min-h-screen flex items-center justify-center text-2xl">
-              404 - Page Not Found
-            </div>
-          }
-        />
-      </Routes>
+          {/* Catch-all 404 */}
+          <Route
+            path="*"
+            element={
+              <div className="min-h-screen flex items-center justify-center text-2xl">
+                404 - Page Not Found
+              </div>
+            }
+          />
+        </Routes>
+      </React.Suspense>
     </BrowserRouter>
   );
 }

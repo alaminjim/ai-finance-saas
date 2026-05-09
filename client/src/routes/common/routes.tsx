@@ -1,14 +1,17 @@
+import { lazy } from "react";
 import { AUTH_ROUTES, PROTECTED_ROUTES } from "./routePath";
-import SignIn from "@/pages/auth/sign-in";
-import SignUp from "@/pages/auth/sign-up";
-import GoogleCallback from "@/pages/auth/google-callback";
-import Dashboard from "@/pages/dashboard";
-import Transactions from "@/pages/transactions";
-import Reports from "@/pages/reports";
-import Settings from "@/pages/settings";
-import Account from "@/pages/settings/account";
-import Appearance from "@/pages/settings/appearance";
-import Billing from "@/pages/settings/billing";
+
+// Lazy load components
+const SignIn = lazy(() => import("@/pages/auth/sign-in"));
+const SignUp = lazy(() => import("@/pages/auth/sign-up"));
+const GoogleCallback = lazy(() => import("@/pages/auth/google-callback"));
+const Dashboard = lazy(() => import("@/pages/dashboard"));
+const Transactions = lazy(() => import("@/pages/transactions"));
+const Reports = lazy(() => import("@/pages/reports"));
+const Settings = lazy(() => import("@/pages/settings"));
+const Account = lazy(() => import("@/pages/settings/account"));
+const Appearance = lazy(() => import("@/pages/settings/appearance"));
+const Billing = lazy(() => import("@/pages/settings/billing"));
 
 export const authenticationRoutePaths = [
   { path: AUTH_ROUTES.SIGN_IN, element: <SignIn /> },

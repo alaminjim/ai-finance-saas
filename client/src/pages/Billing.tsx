@@ -30,7 +30,7 @@ const Billing = () => {
       console.log('Payment success detected, session_id:', sessionId);
       
       // Call payment success endpoint to activate subscription
-      fetch(`${import.meta.env.VITE_API_URL || "https://ai-finance-saas-th6o.onrender.com/api"}/billing/payment-success?session_id=${sessionId}`)
+      fetch(`${import.meta.env.VITE_API_URL || "https://ai-finance-saas-wk8y.onrender.com/api"}/billing/payment-success?session_id=${sessionId}`)
         .then(response => response.json())
         .then(data => {
           console.log('Payment success response:', data);

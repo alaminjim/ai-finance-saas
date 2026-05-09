@@ -3,6 +3,8 @@ import "./config/passport.config";
 import express, { NextFunction, Request, Response } from "express";
 import cors from "cors";
 import passport from "passport";
+import helmet from "helmet";
+import compression from "compression";
 import { HTTPSTATUS } from "./config/http.config";
 import { errorHandler } from "./middlewares/errorHandler.middleware";
 import { asyncHandler } from "./middlewares/asyncHandler.middlerware";
@@ -19,6 +21,8 @@ import { requirePremium } from "./middlewares/premium.middleware";
 import { Env } from "./config/env.config";
 
 const app = express();
+app.use(helmet());
+app.use(compression());
 const BASE_PATH = process.env.BASE_PATH;
 
 app.use(express.json());
@@ -29,7 +33,6 @@ app.use(passport.initialize());
 const allowedOrigins: string[] = [
   process.env.FRONTEND_ORIGIN || "",
   "https://ai-finance-saas-client.onrender.com",
-  "https://ai-finance-saas-d1df6b.netlify.app",
 ].filter(origin => origin !== "");
 
 app.use(
