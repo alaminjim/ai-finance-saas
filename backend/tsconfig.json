@@ -4,9 +4,8 @@
     "target": "es2021",
 
     /* Modules */
-    "module": "ESNext",
+    "module": "CommonJS",
     "moduleResolution": "Node",
-    "ignoreDeprecations": "5.0",
     "rootDir": "./src",
 
     /* Emit */
