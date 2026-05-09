@@ -71,7 +71,7 @@ const userSchema = new Schema<UserDocument>(
   }
 );
 
-userSchema.pre("save", async function (this: UserDocument, next) {
+userSchema.pre("save", async function (this: any, next: (err?: Error) => void) {
   if (this.isModified("password")) {
     if (this.password) {
       this.password = await hashValue(this.password);
@@ -80,7 +80,7 @@ userSchema.pre("save", async function (this: UserDocument, next) {
   next();
 });
 
-userSchema.methods.omitPassword = function (this: UserDocument): Omit<UserDocument, "password"> {
+userSchema.methods.omitPassword = function (this: any): any {
   const userObject = this.toObject();
   delete userObject.password;
   return userObject;

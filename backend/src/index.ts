@@ -49,7 +49,7 @@ app.get(
 );
 
 // Test endpoint without authentication
-app.get(`${BASE_PATH}/user/test`, (req, res) => {
+app.get(`${BASE_PATH}/user/test`, (req: Request, res: Response) => {
   res.json({ message: "Backend is working!", timestamp: new Date() });
 });
 

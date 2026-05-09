@@ -1,6 +1,7 @@
 import { v2 as cloudinary } from "cloudinary";
 import { CloudinaryStorage } from "multer-storage-cloudinary";
 import multer from "multer";
+import { Request } from "express";
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -17,7 +18,7 @@ const STORAGE_PARAMS = {
 
 const storage = new CloudinaryStorage({
   cloudinary,
-  params: (req, file) => ({
+  params: async (req: Request, file: Express.Multer.File) => ({
     ...STORAGE_PARAMS,
   }),
 });
@@ -25,10 +26,10 @@ const storage = new CloudinaryStorage({
 export const upload = multer({
   storage,
   limits: { fileSize: 2 * 1024 * 1024, files: 1 },
-  fileFilter: (_, file, cb) => {
+  fileFilter: (_: Request, file: Express.Multer.File, cb: any) => {
     const isValid = /^image\/(jpe?g|png)$/.test(file.mimetype);
     if (!isValid) {
-      return;
+      return cb(new Error("Invalid file type"), false);
     }
 
     cb(null, true);
