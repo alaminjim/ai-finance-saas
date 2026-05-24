@@ -3,7 +3,7 @@
 **AI Finance Tracker** is an intelligent personal finance management SaaS designed to help users track, analyze, and optimize their income and expenses using AI-powered receipt scanning and automated reporting.
 
 ---
-🚀 Live Site: https://ai-finance-saas-d1df6b.netlify.app/overview
+🚀 Live Site: https://ai-fnanse.netlify.app
 
 ## Features
 
