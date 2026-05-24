@@ -12,6 +12,7 @@ import { authenticationRoutePaths, protectedRoutePaths } from "./common/routes";
 import { useTypedSelector } from "@/app/hook";
 import { AUTH_ROUTES, PROTECTED_ROUTES } from "./common/routePath";
 import useAuthExpiration from "@/hooks/use-auth-expiration";
+import { BrandLoader } from "@/components/ui/brand-loader";
 
 // ------------------ AuthRoute ------------------
 const AuthRoute = () => {
@@ -19,11 +20,7 @@ const AuthRoute = () => {
 
   // Redux Persist state restore check
   if (accessToken === undefined && user === undefined) {
-    return (
-      <div className="min-h-screen flex items-center justify-center text-lg">
-        Loading...
-      </div>
-    );
+    return <BrandLoader />;
   }
 
   // If logged in, redirect to overview
@@ -41,11 +38,7 @@ const ProtectedRoute = () => {
 
   // Loading state during Redux Persist restore
   if (accessToken === undefined && user === undefined) {
-    return (
-      <div className="min-h-screen flex items-center justify-center text-lg">
-        Loading...
-      </div>
-    );
+    return <BrandLoader />;
   }
 
   // If not logged in, redirect to login
@@ -62,13 +55,7 @@ function AppRoutes() {
 
   return (
     <BrowserRouter>
-      <React.Suspense
-        fallback={
-          <div className="min-h-screen flex items-center justify-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-green-500"></div>
-          </div>
-        }
-      >
+      <React.Suspense fallback={<BrandLoader />}>
         <Routes>
           {/* Public / Authentication Routes */}
           <Route element={<AuthRoute />}>

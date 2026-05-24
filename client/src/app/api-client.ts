@@ -16,7 +16,7 @@ const baseQueryWithAuth = fetchBaseQuery({
 export const apiClient = createApi({
   reducerPath: "api", // Add API client reducer to root reducer
   baseQuery: baseQueryWithAuth,
-  refetchOnMountOrArgChange: true, // Refetch on mount or arg change
+  refetchOnMountOrArgChange: false, // Use smart cache (only refetch on tag invalidation)
   tagTypes: ["transactions", "analytics", "billingSubscription"], // Tag types for RTK Query
   endpoints: () => ({}), // Endpoints for RTK Query
 });

@@ -121,6 +121,13 @@ const presets: DateRangePreset[] = [
   },
 ];
 
+export const getDefaultDateRange = (
+  defaultRange: DateRangeEnumType = DateRangeEnum.LAST_30_DAYS
+): DateRangeType => {
+  const defaultPreset = presets.find((p) => p.value === defaultRange);
+  return defaultPreset ? defaultPreset.getRange() : null;
+};
+
 export const DateRangeSelect = ({
   dateRange,
   setDateRange,

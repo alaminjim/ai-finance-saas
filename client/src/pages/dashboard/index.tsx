@@ -5,10 +5,10 @@ import PageLayout from "@/components/page-layout";
 import ExpensePieChart from "./expense-pie-chart";
 import DashboardRecentTransactions from "./dashboard-recent-transactions";
 import { useState } from "react";
-import { DateRangeType } from "@/components/date-range-select";
+import { DateRangeType, getDefaultDateRange } from "@/components/date-range-select";
 
 const Dashboard = () => {
-  const [dateRange, _setDateRange] = useState<DateRangeType>(null);
+  const [dateRange, _setDateRange] = useState<DateRangeType>(() => getDefaultDateRange());
 
   return (
     <div className="w-full flex flex-col">

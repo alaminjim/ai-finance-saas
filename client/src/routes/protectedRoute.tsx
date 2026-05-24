@@ -1,17 +1,14 @@
 import { useTypedSelector } from "@/app/hook";
 import { Navigate, Outlet } from "react-router-dom";
 import { AUTH_ROUTES } from "./common/routePath";
+import { BrandLoader } from "@/components/ui/brand-loader";
 
 const ProtectedRoute = () => {
   const { accessToken, user } = useTypedSelector((state) => state.auth);
 
   // Loading during Redux Persist restore
   if (accessToken === undefined && user === undefined) {
-    return (
-      <div className="min-h-screen flex items-center justify-center text-lg">
-        Loading...
-      </div>
-    );
+    return <BrandLoader />;
   }
 
   if (accessToken && user) return <Outlet />;
