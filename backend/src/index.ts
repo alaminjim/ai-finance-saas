@@ -17,6 +17,7 @@ import { initializeCrons } from "./cron";
 import reportRoutes from "./routes/report.route";
 import analyticsRoutes from "./routes/analytics.route";
 import billingRoutes from "./routes/billing.route";
+import cronRoutes from "./routes/cron.route";
 import { requirePremium } from "./middlewares/premium.middleware";
 import { Env } from "./config/env.config";
 
@@ -62,6 +63,7 @@ app.use(`${BASE_PATH}/transaction`, passportAuthenticateJwt, transactionRoutes);
 app.use(`${BASE_PATH}/report`, passportAuthenticateJwt, reportRoutes);
 app.use(`${BASE_PATH}/analytics`, passportAuthenticateJwt, analyticsRoutes);
 app.use(`${BASE_PATH}/billing`, billingRoutes);
+app.use(`${BASE_PATH}/cron`, cronRoutes);
 
 app.use(errorHandler);
 

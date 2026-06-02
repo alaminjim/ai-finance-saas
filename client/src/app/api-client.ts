@@ -2,7 +2,7 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { RootState } from "./store";
 
 const baseQueryWithAuth = fetchBaseQuery({
-  baseUrl: import.meta.env.VITE_API_URL || "https://ai-finance-saas-wk8y.onrender.com/api",
+  baseUrl: import.meta.env.VITE_API_URL || "https://finanse-server-gamma.vercel.app/api",
   credentials: "include",
   prepareHeaders: (headers, { getState }) => {
     const auth = (getState() as RootState).auth;

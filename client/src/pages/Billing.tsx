@@ -9,7 +9,7 @@ import { toast } from "sonner";
 
 // Debug Stripe configuration
 console.log('Stripe publishable key:', import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY ? 'Configured' : 'Missing');
-console.log('API URL:', import.meta.env.VITE_API_URL || "https://ai-finance-saas-th6o.onrender.com/api");
+console.log('API URL:', import.meta.env.VITE_API_URL || "https://finanse-server-gamma.vercel.app/api");
 
 const Billing = () => {
   const navigate = useNavigate();
@@ -30,7 +30,7 @@ const Billing = () => {
       console.log('Payment success detected, session_id:', sessionId);
       
       // Call payment success endpoint to activate subscription
-      fetch(`${import.meta.env.VITE_API_URL || "https://ai-finance-saas-wk8y.onrender.com/api"}/billing/payment-success?session_id=${sessionId}`)
+      fetch(`${import.meta.env.VITE_API_URL || "https://finanse-server-gamma.vercel.app/api"}/billing/payment-success?session_id=${sessionId}`)
         .then(response => response.json())
         .then(data => {
           console.log('Payment success response:', data);

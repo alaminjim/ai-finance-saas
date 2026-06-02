@@ -8,11 +8,12 @@ import { Provider } from "react-redux";
 import { store } from "./app/store.ts";
 import { persistor } from "./app/store.ts";
 import { PersistGate } from "redux-persist/integration/react";
+import { BrandLoader } from "@/components/ui/brand-loader";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <Provider store={store}>
-      <PersistGate loading={<div>Loading...</div>} persistor={persistor}>
+      <PersistGate loading={<BrandLoader />} persistor={persistor}>
         <NuqsAdapter>
           <App />
         </NuqsAdapter>
