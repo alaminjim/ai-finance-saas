@@ -46,6 +46,10 @@ export const createTransactionService = async (
   return transaction;
 };
 
+const escapeRegExp = (str: string) => {
+  return str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+};
+
 export const getAllTransactionService = async (
   userId: string,
   filters: {
@@ -65,9 +69,10 @@ export const getAllTransactionService = async (
   };
 
   if (keyword) {
+    const escapedKeyword = escapeRegExp(keyword);
     filterConditions.$or = [
-      { title: { $regex: keyword, $options: "i" } },
-      { category: { $regex: keyword, $options: "i" } },
+      { title: { $regex: escapedKeyword, $options: "i" } },
+      { category: { $regex: escapedKeyword, $options: "i" } },
     ];
   }
 

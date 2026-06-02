@@ -10,10 +10,10 @@ cloudinary.config({
 });
 
 const STORAGE_PARAMS = {
-  folder: "images",
+  folder: "ai-finance-saas/profiles",
   allowed_formats: ["jpg", "png", "jpeg"],
-  rescource_type: "image" as const,
-  quality: "auto:good" as const,
+  resource_type: "image" as const,
+  transformation: [{ width: 400, height: 400, crop: "fill", gravity: "face", quality: "auto", fetch_format: "auto" }],
 };
 
 const storage = new CloudinaryStorage({
