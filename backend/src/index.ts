@@ -31,9 +31,15 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use(passport.initialize());
 
+const envOrigins = process.env.FRONTEND_ORIGIN
+  ? process.env.FRONTEND_ORIGIN.split(",").map(o => o.trim())
+  : [];
+
 const allowedOrigins: string[] = [
-  process.env.FRONTEND_ORIGIN || "",
+  ...envOrigins,
+  "https://ai-fnanse.netlify.app",
   "https://ai-finance-saas-client.onrender.com",
+  "https://ai-finance-saas-client.vercel.app",
 ].filter(origin => origin !== "");
 
 app.use(
